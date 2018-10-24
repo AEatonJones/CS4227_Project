@@ -12,12 +12,12 @@ public class Account {
      * @param password
      * @param number
      */
-    public Account(String firstname, String surname, String email, String password, String number) {
-        this.firstname = firstname;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-        this.number = number;
+    private Account(AccountBuilder builder) {
+        this.firstname = builder.firstname;
+        this.surname = builder.surname;
+        this.email = builder.email;
+        this.password = builder.password;
+        this.number = builder.number;
     }
     
         /**
@@ -59,4 +59,35 @@ public class Account {
         public String getNumber() {
         return this.number;
         }
+        
+       	//Builder Class
+	public static class AccountBuilder{
+
+                private String firstname, surname, email, password, number;
+		
+                /**
+                * Constructor for Account Object
+                * @param fn - first name
+                * @param sn - surname
+                * @param em - email
+                * @param pw - password
+                * @param pn - phone number
+                */
+		public AccountBuilder(String fn, String sn, String em, String pw, String pn){
+			this.firstname=fn;
+			this.surname= sn;
+                        this.email= em;
+                        this.password= pw;
+                        this.number= pn;
+		}
+
+                /**
+                * Account object builder
+                * @return Account Object.
+                */
+		public Account build(){
+			return new Account(this);
+		}
+	}
 }
+
