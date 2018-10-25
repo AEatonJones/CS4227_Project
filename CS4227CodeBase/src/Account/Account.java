@@ -27,6 +27,12 @@ public class Account {
         public String getFirstName() {
         return this.firstname;
         }
+        /**
+        * Setter which sets the customers first name.
+        */
+        public void setFirstName(String fn) {
+            this.firstname = fn;
+        }
         
         /**
         * Getter which gets the customers first name.
@@ -34,6 +40,12 @@ public class Account {
         */
         public String getSurname() {
             return this.surname;
+        }
+        /**
+        * Setter which sets the customers last name.
+        */
+        public void setSurname(String sn) {
+            this.surname = sn;
         }
     
         /**
@@ -43,6 +55,12 @@ public class Account {
         public String getEmail() {
         return this.email;
         }
+        /**
+        * Setter which sets the customers email.
+        */
+        public void setEmail(String em) {
+            this.email = em;
+        }
         
         /**
         * Getter which gets the customers first name.
@@ -51,6 +69,12 @@ public class Account {
         public String getPassword() {
         return this.password;
         }
+        /**
+        * Setter which sets the customers Password.
+        */
+        public void setPassword(String pw) {
+            this.password = pw;
+        }
         
         /**
         * Getter which gets the customers first name.
@@ -58,6 +82,12 @@ public class Account {
         */
         public String getNumber() {
         return this.number;
+        }
+        /**
+        * Setter which sets the customers email.
+        */
+        public void setNumber(String pn) {
+            this.number = pn;
         }
         
        	//Builder Class
