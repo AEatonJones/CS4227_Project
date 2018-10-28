@@ -45,7 +45,7 @@ public class DatabaseConnector {
            
             Account account = new Account.AccountBuilder("","","","","").build();
             while(resultSet.next()){
-                
+                account.setFirstName(resultSet.getString("fname"));
                 account.setSurname(resultSet.getString("sname"));
                 account.setEmail(resultSet.getString("email"));
                 account.setPassword(resultSet.getString("password"));
