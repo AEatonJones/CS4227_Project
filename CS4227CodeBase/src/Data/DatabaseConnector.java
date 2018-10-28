@@ -23,7 +23,7 @@ public class DatabaseConnector {
     public static Connection getConnection() throws Exception {
         try {
             String driver = "com.mysql.cj.jdbc.Driver";
-            String url = "jdbc:mysql://localhost:3306/cs4227_project";
+            String url = "jdbc:derby://localhost:1527/Hotel_DB";
             String username = "root";
             String password = "";
             Class.forName(driver);
@@ -46,11 +46,10 @@ public class DatabaseConnector {
             Account account = new Account.AccountBuilder("","","","","").build();
             while(resultSet.next()){
                 
-                account.setFirstName(resultSet.getString("First Name"));
-                account.setSurname(resultSet.getString("Surname"));
-                account.setEmail(resultSet.getString("Email"));
-                account.setPassword(resultSet.getString("Password"));
-                account.setNumber(resultSet.getString("Phone Number"));
+                account.setSurname(resultSet.getString("sname"));
+                account.setEmail(resultSet.getString("email"));
+                account.setPassword(resultSet.getString("password"));
+                account.setNumber(resultSet.getString("phone_number"));
                
             }
             return account;
