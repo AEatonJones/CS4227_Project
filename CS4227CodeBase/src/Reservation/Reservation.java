@@ -28,6 +28,11 @@ public class Reservation
         return reservation;
     }
     
+    public int getNoNights()
+    {
+        return noNights;
+    }
+    
     @Override
     public String toString()
     {
