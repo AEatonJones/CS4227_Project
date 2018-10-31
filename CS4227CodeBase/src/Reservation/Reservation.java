@@ -11,7 +11,7 @@ public class Reservation
     private int noNights;
     private float cost;
     
-    private Reservation(String accountID, String startDate, int noNights, float cost) {
+    public Reservation(String accountID, String startDate, int noNights, float cost) {
         this.accountID = accountID;
         this.startDate = startDate;
         this.noNights = noNights;

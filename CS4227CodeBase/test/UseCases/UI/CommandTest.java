@@ -6,6 +6,7 @@
 package UseCases.UI;
 
 import Command.*;
+import Reservation.Reservation;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import org.junit.Test;
@@ -27,16 +28,17 @@ public class CommandTest {
     @Test
     public void TestCommandWrite() {
         try {
-            Command cmd = new WriteCommand("src/resources/WriteCommandTest.txt");
+            Reservation reservation = Reservation.makeReservation("1222","31/10/2018", 2, 300f);
+            Command cmd = new WriteCommand("src/resources/WriteCommandTest.txt", reservation);
             
             cmd.execute();
             BufferedReader reader = new BufferedReader(new FileReader("src/resources/WriteCommandTest.txt"));
             assertEquals("Test1", reader.readLine());
-            assertEquals("writing", reader.readLine()); //In writeCommand, have it write to file the string on the line
+            assertEquals(reservation.toString().trim(), reader.readLine()); //In writeCommand, have it write to file the string on the line
             reader.close();
             
             cmd.undo();
-            
+         
             while((reader.readLine()) != null){
                 assertEquals(false,reader.readLine().equals("writing"));
             }
