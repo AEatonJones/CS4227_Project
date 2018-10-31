@@ -47,7 +47,7 @@ public class CommandTest {
         }
         catch(Exception e){
             e.printStackTrace();
-            fail();
+
         }
     }
 }

@@ -40,22 +40,23 @@ public class WriteCommand implements Command {
     @Override
     public void undo() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("src/resources/WriteCommandTest.txt"));
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src/resources/WriteCommandTest.txt"));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("src/resources/WriteCommandTest.txt"));
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/resources/WriteCommandTest.txt",true));
             String undo = "remove";
             String currentLine;
-            while((currentLine = reader.readLine()) != null){
+            while((currentLine = bufferedReader.readLine()) != null){
                 String trimmedLine = currentLine.trim();
-                if(trimmedLine.equals(undo)) continue;
-                    writer.write(currentLine + System.getProperty("line.separator"));
+                if(trimmedLine.equals(undo)){
+                    bufferedWriter.write("");
                 }
-            writer.close();
-            reader.close();
-            } catch (IOException ex) {
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(WriteCommand.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(WriteCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
-      
         
+    
         
     }
     
