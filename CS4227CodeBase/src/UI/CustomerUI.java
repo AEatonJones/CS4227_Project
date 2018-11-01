@@ -1,10 +1,16 @@
 package UI;
 
 import Account.*;
+import Command.CancelReservationCommand;
+import Command.Command;
+import Command.MakeReservationCommand;
 import Data.*;
+import Reservation.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -345,9 +351,12 @@ class AccountMenuUI implements UI, ActionListener  {
 
 class ViewReservation implements UI,ActionListener {
         JFrame window;
-        JList reservations;
-        JButton cancelOrder, goBack;
-        Account account;
+        JList listOfReservations;
+        JScrollPane scrollPane;
+        DefaultListModel orderListModel;
+        JButton cancelReservation, goBack;
+        Account account = null;
+        ArrayList<String> reservations;
         
         /**
         * Constructor.
@@ -362,33 +371,45 @@ class ViewReservation implements UI,ActionListener {
         */
         @Override
         public void draw() {       
-        window = new JFrame("Reservations Information");
+        window = new JFrame("List of Reservations");
         window.setSize(350, 230);
         window.setResizable(false);
         window.setLocationRelativeTo(null);
         window.setDefaultCloseOperation(window.EXIT_ON_CLOSE);
         window.setLayout(new BorderLayout());
 
-
+        JPanel title = new JPanel();
         JPanel input = new JPanel();
         input.setLayout(new GridLayout(1, 1));
+        
+        scrollPane = new JScrollPane();
+        orderListModel = new DefaultListModel();
+        listOfReservations = new JList(orderListModel);
+        scrollPane.setViewportView(listOfReservations);
+        reservations = null;
 
-        //adds box with reservations
-        reservations = new JList<>();
-        reservations.setModel(new AbstractListModel<String>() {
-            String[] strings = {" "," "};
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-
+        try {
+            //adds box with reservations
+            reservations = ReservationControl.obtainReservationInfo(account.getEmail());
+        } catch (IOException ex) {
+            Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for(int i = 0; i < reservations.size() ;i++ ){
+            orderListModel.addElement(reservations.get(i));
+        }
+        
+        title.add(new JLabel("Email,Check-In Date,No. of Nights,Cost,Location"));
+        input.add(scrollPane);
+        window.add("North", title);
         window.add("Center", input);
 
         JPanel buttons = new JPanel();
         buttons.setLayout(new GridLayout(1, 2));
         
-        cancelOrder = new JButton("Cancel Order");
-        cancelOrder.addActionListener(this);
-        buttons.add(cancelOrder);
+        cancelReservation = new JButton("Cancel Reservation");
+        cancelReservation.addActionListener(this);
+        buttons.add(cancelReservation);
         
         goBack = new JButton("Go Back");
         goBack.addActionListener(this);
@@ -396,6 +417,7 @@ class ViewReservation implements UI,ActionListener {
 
         window.add("South", buttons);
         window.setVisible(true);
+        
     }
 
         /**
@@ -404,13 +426,36 @@ class ViewReservation implements UI,ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton pressed = (JButton)e.getSource();
+        
+    if(pressed.equals(cancelReservation)) {
+        try {
+            String remove = listOfReservations.getSelectedValue().toString();
+            System.out.println(remove);
+            String[] resDetails = remove.split(",");
+            for(String s:resDetails) {
+                System.out.println(s);
+            }
+            Reservation r = Reservation.makeReservation(resDetails[0], resDetails[1], Integer.parseInt(resDetails[2]), resDetails[3],Float.parseFloat(resDetails[4]));
+            Command cmd = new CancelReservationCommand(r,account);
+            cmd.execute();
+            
+            new RemovalConfirmation().initilizeProfile(account,cmd);
 
-        if(pressed.equals(goBack)) {
+            
+        } catch (Exception ex) {
+            Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.window.dispose();
+    }
+        
+
+    if(pressed.equals(goBack)) {
             new AccountMenuUI().initilizeProfile(account);
             this.window.dispose();
             }
-        }
     }
+}
+    
 
 class MakeReservation implements UI,ActionListener {
     JFrame window;
@@ -432,7 +477,7 @@ class MakeReservation implements UI,ActionListener {
      */
     @Override
     public void draw() {
-        window = new JFrame("Register your Account");
+        window = new JFrame("Make Your Reservation");
         window.setSize(350, 230);
         window.setResizable(false);
         window.setLocationRelativeTo(null);
@@ -490,21 +535,183 @@ class MakeReservation implements UI,ActionListener {
 
             try {
                 //send to database
+                String cID = checkInDate.getText();
+                int nON = Integer.parseInt(NoOfNights.getText());
+                int nOR = Integer.parseInt(NoOfRooms.getText());
+                String location = reservations.getSelectedItem().toString();
+                
+                Reservation r = Reservation.makeReservation(account.getEmail(), cID, nON, location);
+                Command cmd = new MakeReservationCommand(r,account);
+                cmd.execute();
+                
+                new ReservationConfirmation().initilizeProfile(account,cmd);
                 
                 
             } catch (Exception ex) {
                 Logger.getLogger(CustomerRegister.class.getName()).log(Level.SEVERE, null, ex);
             }
+          
             
-            new CustomerLoginUI().draw();
             this.window.dispose();
             
         }
         
         else if(pressed.equals(goBack))
         {
-            new CustomerLoginUI().draw();
+            new AccountMenuUI().initilizeProfile(account);
             this.window.dispose();
         }
     }  
+}
+
+class ReservationConfirmation implements UI, ActionListener {
+    
+    JFrame frame;
+    JButton yes,no;
+    Account account;
+    Command command;
+    
+    /**
+    * Constructor.
+    */
+    public void initilizeProfile(Account currentAccount, Command cmd) {
+        account = currentAccount;
+        command = cmd;
+        draw();
+        }
+
+    /**
+     * Sets up GUI.
+     */
+    @Override
+    public void draw() {
+        frame = new JFrame("Confirm Reservation");
+        JPanel title = new JPanel();
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 200);
+        frame.setLayout(new GridLayout(1, 1));
+        
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.insets = new Insets(5, 0, 5, 0);
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.fill = GridBagConstraints.BOTH;
+        
+
+        JPanel buttons = new JPanel();
+        buttons.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
+        buttons.setLayout(new GridBagLayout());
+        
+        yes = new JButton("Yes");
+        yes.addActionListener(this);
+        buttons.add(yes, constraints);
+        
+        no = new JButton("No");
+        no.addActionListener(this);
+        buttons.add(no, constraints);      
+        
+        frame.add(buttons);
+             
+        frame.setVisible(true);
+    }
+
+    /**
+     * If a button is pressed.
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JButton pressed = (JButton) e.getSource();
+        
+        if(pressed.equals(yes)) {
+            this.frame.dispose();
+            new AccountMenuUI().initilizeProfile(account);
+            
+        }
+        else if(pressed.equals(no)) {
+            command.undo();
+            this.frame.dispose();
+            new AccountMenuUI().initilizeProfile(account);
+        }
+        else
+            System.exit(0);
+    }
+}
+
+class RemovalConfirmation implements UI, ActionListener {
+    
+    JFrame frame;
+    JButton yes,no;
+    Account account;
+    Command command;
+    
+    /**
+    * Constructor.
+    */
+    public void initilizeProfile(Account currentAccount, Command cmd) {
+        account = currentAccount;
+        command = cmd;
+        draw();
+        }
+
+    /**
+     * Sets up GUI.
+     */
+    @Override
+    public void draw() {
+        frame = new JFrame("Removal Confirmation");
+        JPanel title = new JPanel();
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 200);
+        frame.setLayout(new GridLayout(1, 1));
+        
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.insets = new Insets(5, 0, 5, 0);
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.fill = GridBagConstraints.BOTH;
+        
+
+        JPanel buttons = new JPanel();
+        buttons.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
+        buttons.setLayout(new GridBagLayout());
+        
+        yes = new JButton("Yes");
+        yes.addActionListener(this);
+        buttons.add(yes, constraints);
+        
+        no = new JButton("No");
+        no.addActionListener(this);
+        buttons.add(no, constraints);      
+        
+        frame.add(buttons);
+             
+        frame.setVisible(true);
+    }
+
+    /**
+     * If a button is pressed.
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JButton pressed = (JButton) e.getSource();
+        
+        if(pressed.equals(yes)) {
+            this.frame.dispose();
+            new AccountMenuUI().initilizeProfile(account);
+            
+        }
+        else if(pressed.equals(no)) {
+            command.undo();
+            this.frame.dispose();
+            new AccountMenuUI().initilizeProfile(account);
+        }
+        else
+            System.exit(0);
+    }
 }

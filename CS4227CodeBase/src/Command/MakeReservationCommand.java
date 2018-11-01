@@ -14,20 +14,19 @@ import payment.PaymentSystemFactory;
 public class MakeReservationCommand implements Command
 {
     private Reservation reservation;
-    private String location;
     private Account account;
     
-    public MakeReservationCommand(Reservation reservation, String location, Account account)
+    public MakeReservationCommand(Reservation reservation, Account account)
     {
         this.reservation = reservation;
-        this.location = location;
+        this.account = account;
     }
     
     @Override
     public void execute()
     {
         //Calculate cost
-        PaymentController controller = PaymentControllerFactory.getPaymentController(location);
+        PaymentController controller = PaymentControllerFactory.getPaymentController(reservation);
         PaymentSystem system = PaymentSystemFactory.getPaymentSystem(controller, account);
         float cost = system.calculateCost(reservation);
         
@@ -35,18 +34,18 @@ public class MakeReservationCommand implements Command
         reservation.setCost(cost);
         
         //Write reservation to file
-        try(FileWriter filewriter = new FileWriter("src/resources/WriteCommandTest.txt",true)){
+        try(FileWriter filewriter = new FileWriter("src/resources/reservations.txt",true)){
             filewriter.write("\n" + reservation.toString());
             filewriter.close();
         
         }   catch (IOException ex) {
-            Logger.getLogger(WriteCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MakeReservationCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
     public void undo()
     {
-        new CancelReservationCommand(reservation, location, account).execute();
+        new CancelReservationCommand(reservation, account).execute();
     }
 }

@@ -15,45 +15,46 @@ import java.util.logging.Logger;
 public class CancelReservationCommand implements Command
 {
     private Reservation reservation;
-    private String location;
     private Account account;
     
-    public CancelReservationCommand(Reservation reservation, String location, Account account)
+    public CancelReservationCommand(Reservation reservation, Account account)
     {
         this.reservation = reservation;
-        this.location = location;
         this.account = account;
     }
     
     @Override
     public void execute()
     {
-        File writeFile = new File("src/resources/WriteCommandTest.txt");
-        File tempFile = new File("src/resources/TempWriteCommandTest.txt");
+        
+        System.out.println("THIS METHOD IS WORKING!");
+        File writeFile = new File("src/resources/reservations.txt");
+        File tempFile = new File("src/resources/TempReservations.txt");
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(writeFile));
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile));
-            String undo = reservation.toString().trim();
-            String currentLine;
-            while((currentLine = bufferedReader.readLine()) != null){
-                String trimmedLine = currentLine.trim();
-                if(!trimmedLine.equals(undo))
-                    bufferedWriter.write(currentLine + "\n");
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(writeFile)); BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile))) {
+                String undo = reservation.toString().trim();
+                String currentLine;
+                while((currentLine = bufferedReader.readLine()) != null){
+                    String trimmedLine = currentLine.trim();
+                    if(!trimmedLine.equals(undo))
+                        bufferedWriter.write(currentLine + "\n");
+                }
             }
-            bufferedWriter.close();
-            bufferedReader.close();
-            writeFile.delete();
+            
+            System.out.println(writeFile.delete());
             tempFile.renameTo(writeFile);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(WriteCommand.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            Logger.getLogger(CancelReservationCommand.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(WriteCommand.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            Logger.getLogger(CancelReservationCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
     public void undo()
     {
-        new MakeReservationCommand(reservation, location, account).execute();
+        new MakeReservationCommand(reservation, account).execute();
     }
 }

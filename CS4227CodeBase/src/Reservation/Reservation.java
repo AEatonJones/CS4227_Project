@@ -10,29 +10,32 @@ public class Reservation
     private String startDate;
     private int noNights;
     private float cost;
+    private String Location;
     
-    public Reservation(String accountEmail, String startDate, int noNights)
+    private Reservation(String accountEmail, String startDate, int noNights,String location)
     {
         this.accountEmail = accountEmail;
         this.startDate = startDate;
         this.noNights = noNights;
+        this.Location = location;
         this.cost = 0.0f;
     }
     
-    public Reservation(String accountEmail, String startDate, int noNights, float cost) {
+    private Reservation(String accountEmail, String startDate, int noNights, String location, float cost) {
         this.accountEmail = accountEmail;
         this.startDate = startDate;
         this.noNights = noNights;
+        this.Location = location;
         this.cost = cost;
     }
     
-    public static Reservation makeReservation(String accountEmail, String startDate, int noNights, float cost) throws Exception {
-        Reservation reservation = new Reservation(accountEmail, startDate, noNights, cost);
-        
-        FileWriter writer = new FileWriter(DBNAME, true);
-        writer.append(reservation.toString());
-        writer.close();
-        
+    public static Reservation makeReservation(String accountEmail, String startDate, int noNights,String location) throws Exception {
+        Reservation reservation = new Reservation(accountEmail, startDate, noNights, location);
+        return reservation;
+    }
+    
+    public static Reservation makeReservation(String accountEmail, String startDate, int noNights,String location, float cost) throws Exception {
+        Reservation reservation = new Reservation(accountEmail, startDate, noNights, location, cost);
         return reservation;
     }
     
@@ -46,6 +49,10 @@ public class Reservation
         return noNights;
     }
     
+    public String getLocation() {
+        return Location;
+    }
+    
     public void setCost(float cost)
     {
         this.cost = cost;
@@ -54,6 +61,6 @@ public class Reservation
     @Override
     public String toString()
     {
-        return (accountEmail + "," + startDate + "," + noNights + "," + String.format("%.2f", cost) + "\n");
+        return (accountEmail + "," + startDate + "," + noNights + "," + Location + "," + String.format("%.2f", cost));
     }
 }
