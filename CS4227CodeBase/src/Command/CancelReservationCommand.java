@@ -27,7 +27,6 @@ public class CancelReservationCommand implements Command
     public void execute()
     {
         
-        System.out.println("THIS METHOD IS WORKING!");
         File writeFile = new File("src/resources/reservations.txt");
         File tempFile = new File("src/resources/TempReservations.txt");
         try {
@@ -40,8 +39,7 @@ public class CancelReservationCommand implements Command
                         bufferedWriter.write(currentLine + "\n");
                 }
             }
-            
-            System.out.println(writeFile.delete());
+            writeFile.delete();
             tempFile.renameTo(writeFile);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
