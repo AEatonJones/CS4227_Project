@@ -25,7 +25,7 @@ public class Account {
         * @return First name of customer.
         */
         public String getFirstName() {
-        return this.firstname;
+            return this.firstname;
         }
         /**
         * Setter which sets the customers first name.
@@ -53,7 +53,7 @@ public class Account {
         * @return Email of customer.
         */   
         public String getEmail() {
-        return this.email;
+            return this.email;
         }
         /**
         * Setter which sets the customers email.
@@ -67,7 +67,7 @@ public class Account {
         * @return Password of customer.
         */
         public String getPassword() {
-        return this.password;
+            return this.password;
         }
         /**
         * Setter which sets the customers Password.
@@ -81,7 +81,7 @@ public class Account {
         * @return Phone number of customer.
         */
         public String getNumber() {
-        return this.number;
+            return this.number;
         }
         /**
         * Setter which sets the customers email.

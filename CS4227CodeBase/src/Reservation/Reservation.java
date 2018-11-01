@@ -11,6 +11,14 @@ public class Reservation
     private int noNights;
     private float cost;
     
+    public Reservation(String accountEmail, String startDate, int noNights)
+    {
+        this.accountEmail = accountEmail;
+        this.startDate = startDate;
+        this.noNights = noNights;
+        this.cost = 0.0f;
+    }
+    
     public Reservation(String accountEmail, String startDate, int noNights, float cost) {
         this.accountEmail = accountEmail;
         this.startDate = startDate;
@@ -28,9 +36,19 @@ public class Reservation
         return reservation;
     }
     
+    public String getAccountEmail()
+    {
+        return accountEmail;
+    }
+    
     public int getNoNights()
     {
         return noNights;
+    }
+    
+    public void setCost(float cost)
+    {
+        this.cost = cost;
     }
     
     @Override

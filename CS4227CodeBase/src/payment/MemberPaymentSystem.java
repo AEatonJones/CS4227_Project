@@ -2,7 +2,7 @@ package payment;
 
 import Reservation.Reservation;
 
-public class MemberPaymentSystem extends AbstractPaymentSystem
+public class MemberPaymentSystem extends PaymentSystem
 {
     public MemberPaymentSystem(PaymentController controller)
     {

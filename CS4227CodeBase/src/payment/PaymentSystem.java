@@ -2,11 +2,11 @@ package payment;
 
 import Reservation.Reservation;
 
-public abstract class AbstractPaymentSystem
+public abstract class PaymentSystem
 {
     private PaymentController payment;
     
-    public AbstractPaymentSystem(PaymentController controller)
+    public PaymentSystem(PaymentController payment)
     {
         this.payment = payment;
     }
