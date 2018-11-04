@@ -6,7 +6,7 @@ public abstract class Room implements IRoom {
     protected String description;
     protected float cost;
     
-    protected BedRoom bedroom;
+    private BedRoom bedroom;
     
     @Override
     public int getID(){
@@ -38,7 +38,8 @@ public abstract class Room implements IRoom {
     @Override
     public void acceptRoomVisitor(RoomVisitor visitor){
         bedroom.acceptRoomVisitor(visitor);
-        visitor.visit((BedRoom) this);
+        visitor.visit((BedRoom)this);
+        //!!
     }
     
     @Override
