@@ -1,17 +1,48 @@
 package hotel.room;
 
-public abstract class Room 
-{
+public abstract class Room implements IRoom {
     protected int id;
     protected int hotel_id;
     protected String description;
     protected float cost;
     
-    public abstract int getID();
+    protected BedRoom bedroom;
     
-    public abstract int getHotelID();
+    @Override
+    public int getID(){
+        return id;
+    }
     
-    public abstract String getDescription();
+    @Override
+    public int getHotelID(){
+        return hotel_id;
+    }
     
-    public abstract float getCost();
+    @Override
+    public String getDescription(){
+        return description;
+    }
+    
+    @Override
+    public float getCost(){
+        return cost;
+    }
+    
+    public Room(int id, int hotel_id, String description, float cost){
+        this.id = id;
+        this.hotel_id = hotel_id;
+        this.description = description;
+        this.cost = cost;
+    }
+    
+    @Override
+    public void acceptRoomVisitor(RoomVisitor visitor){
+        bedroom.acceptRoomVisitor(visitor);
+        visitor.visit((BedRoom) this);
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }
