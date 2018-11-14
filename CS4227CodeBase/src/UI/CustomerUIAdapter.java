@@ -7,6 +7,7 @@ package UI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import UI.CustomerUI.*;
 
 /**
  *
@@ -16,7 +17,7 @@ public class CustomerUIAdapter implements UI , ActionListener{
     private CustomerUI ui = new CustomerUI();
     @Override
     public void drawSignIn() {
-        CustomerUI.CustomerSignIn customerSignIn;
+        CustomerSignIn customerSignIn;
         customerSignIn = ui.new CustomerSignIn(this);
         customerSignIn.draw();
     }
@@ -54,13 +55,24 @@ public class CustomerUIAdapter implements UI , ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
+        
         switch(actionCommand){
-            case "SignIn": break;
-            case "goBackSignIn": break;
-            case "Register": break;
-            case "": break;
-                
+            case "Log in":  /*GOTO CustomerSignIn*/                 break;
+            case "Log in Register":/*GOTO CustomerRegister*/        break;
+            case "Quit":/*EXIT system*/                             break;
+            case "Sign In":/*GOTO AccountMenuUI*/                   break;
+            case "Sign In Go Back":/*GOTO CustomerLogin*/           break;
+            case "Register":/*GOTO CustomerLogin*/                  break;
+            case "Register Go Back":/*GOTO CustomerLogin*/          break;
+            case "Menu Make":/*GOTO MakeReservation*/               break;
+            case "Menu View":/*GOTO ViewReservation*/               break;
+            case "Sign Out":/*GOTO CustomerSignIn*/                 break;
+            case "Cancel Reservation":/*Cancel & Confirm*/          break;
+            case "View Go Back":/*GOTO AccountMenuUI*/              break;
+            case "Search":/*GOTO ViewPossibleRooms*/                break;
+            case "Make Reservation Go Back":/*GOTO AccountMenuUI*/  break;
+            case "Select Room":/**/                                 break;
+            case "Rooms Go Back":/*GOTO MakeReservation*/           break;
         }
     }
-    
 }

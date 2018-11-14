@@ -1,4 +1,0 @@
-Aaron,Jones,aaron@ul.ie,aaron123,0851139716,
-Jack,Coffey,jack@ul.ie,jack123,12345,
-henry,maughan,henry@ul.ie,henry123,12345,
-admin,admin,admin,1,12345,
