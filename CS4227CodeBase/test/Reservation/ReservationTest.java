@@ -14,7 +14,7 @@ public class ReservationTest
     public void makeValidReservationTest(){
         
         try {
-            reservation = Reservation.makeReservation("101", "10/11/12", 10,"Paris");
+            reservation = Reservation.makeReservation("101", "10/11/12", 10,"Paris","101");
             if(reservation == null)
                 fail("Reservation should not be null.");
         } catch(Exception e) {

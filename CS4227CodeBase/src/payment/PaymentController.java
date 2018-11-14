@@ -19,6 +19,6 @@ public abstract class PaymentController
     
     protected float getTax(float amount)
     {
-        return amount * (100 - taxRate);
+        return amount * taxRate;
     }
 }

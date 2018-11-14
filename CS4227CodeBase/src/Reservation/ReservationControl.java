@@ -18,7 +18,7 @@ public class ReservationControl {
     {
         String [] resDetails = line.split(",");
         if(resDetails[0].equalsIgnoreCase(email)) {
-            details = resDetails[0] + "," +resDetails[1] + "," +resDetails[2] + "," + resDetails[3]  + "," + resDetails[4];
+            details = resDetails[0] + "," +resDetails[1] + "," +resDetails[2] + "," + resDetails[3]  + "," + resDetails[4] + "," + resDetails[5];
             res.add(details);
         }
     }

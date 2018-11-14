@@ -3,26 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/Data/DatabaseConnector.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/payment/PaymentController.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/payment/NonMemberPaymentSystem.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/Command/MakeReservationCommand.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/hotel/room/IRoom.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/hotel/room/BedRoom.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/Account/Account.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/hotel/room/Booking.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/hotel/room/Visitable.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/Command/Command.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/Reservation/Reservation.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/Command/CancelReservationCommand.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/hotel/room/Room.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/hotel/room/RoomsBooked.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/resources/WriteCommandTest.txt</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/Account/AccountControl.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/hotel/room/RoomDBReader.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/resources/reservations.txt</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/hotel/room/RoomVisitor.java</file>
-            <file>file:/C:/Users/Aoibhín/Documents/GitHub/CS4227_Project/CS4227CodeBase/src/payment/FrenchPaymentController.java</file>
+            <file>file:/C:/Users/aaron/Desktop/CS4227_Project/CS4227CodeBase/src/UI/CustomerUI.java</file>
         </group>
     </open-files>
 </project-private>

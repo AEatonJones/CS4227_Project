@@ -1,0 +1,15 @@
+UI.CustomerSignIn
+UI.A
+UI.CustomerMenuUI
+UI.ViewReservation
+UI.ViewPossibleRooms
+UI.CustomerLoginUI
+UI.CustomerRegister
+UI.RemovalConfirmation
+UI.AnotherBooking
+UI.MakeReservation
+UI.ViewReservation$1
+UI.CustomerUI
+UI.AccountMenuUI
+UI.ViewProfile
+UI.ReservationConfirmation
