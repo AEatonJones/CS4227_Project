@@ -16,5 +16,4 @@ public interface UI {
     public abstract void drawViewReservations();
     public abstract void drawMakeReservations();
     public abstract void drawAvailableRooms();
-
 }
