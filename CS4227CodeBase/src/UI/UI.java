@@ -9,6 +9,12 @@ package UI;
 * Is an interface that all UI's must follow.
 */
 public interface UI {
-    public abstract void draw();
+    public abstract void drawSignIn();
+    public abstract void drawRegister();
+    public abstract void drawLogIn();
+    public abstract void drawMainMenu();
+    public abstract void drawViewReservations();
+    public abstract void drawMakeReservations();
+    public abstract void drawAvailableRooms();
 
 }
