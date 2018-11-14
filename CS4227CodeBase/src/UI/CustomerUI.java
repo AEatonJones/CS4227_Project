@@ -4,7 +4,6 @@ import Account.*;
 import Command.CancelReservationCommand;
 import Command.Command;
 import Command.MakeReservationCommand;
-import Data.*;
 import Reservation.*;
 import hotel.room.RoomControl;
 import java.awt.*;
@@ -16,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
-public class CustomerUI implements UI {
+public class CustomerUI   {
     private ReservationMemento m;
     private Account a;
     /**
@@ -35,7 +34,7 @@ public class CustomerUI implements UI {
     }
 }
 
-class CustomerLoginUI implements UI, ActionListener {
+class CustomerLoginUI  implements ActionListener {
     
     JFrame frame;
     JButton signIn,register,quit;
@@ -43,7 +42,7 @@ class CustomerLoginUI implements UI, ActionListener {
     /**
      * Sets up GUI.
      */
-    @Override
+    
     public void draw() {
         frame = new JFrame("Login");
         frame.setLocationRelativeTo(null);
@@ -102,7 +101,7 @@ class CustomerLoginUI implements UI, ActionListener {
     }
 }
 
-class CustomerSignIn implements UI,ActionListener {
+class CustomerSignIn   implements ActionListener {
     JFrame window;
     JTextField email;
     JPasswordField password;
@@ -111,7 +110,7 @@ class CustomerSignIn implements UI,ActionListener {
     /**
      * Sets up GUI.
      */
-    @Override
+
     public void draw() {
         window = new JFrame("Sign In");
         window.setSize(325, 140);
@@ -183,7 +182,7 @@ class CustomerSignIn implements UI,ActionListener {
     
 }
 
-class CustomerRegister implements UI,ActionListener {
+class CustomerRegister   implements ActionListener {
     JFrame window;
     JTextField firstname, surname, password, email, number;
     JButton register, goBack;
@@ -191,7 +190,7 @@ class CustomerRegister implements UI,ActionListener {
     /**
      * Sets up GUI.
      */
-    @Override
+   
     public void draw() {
         window = new JFrame("Register your Account");
         window.setSize(350, 230);
@@ -258,7 +257,7 @@ class CustomerRegister implements UI,ActionListener {
                 //send to database
                 AccountControl.printToFile(accountDetails);
                 
-            } catch (Exception ex) {
+            } catch (IOException ex) {
                 Logger.getLogger(CustomerRegister.class.getName()).log(Level.SEVERE, null, ex);
             }
             
@@ -275,7 +274,7 @@ class CustomerRegister implements UI,ActionListener {
     }  
 }
 
-class AccountMenuUI implements UI, ActionListener  {
+class AccountMenuUI  implements ActionListener  {
     JFrame frame;
     JButton checkIn, checkOut, makeReservation, viewReservation, quit, signOut;
     Account account;
@@ -285,7 +284,7 @@ class AccountMenuUI implements UI, ActionListener  {
         draw();
     }
         
-    @Override
+    
     public void draw() {
         frame = new JFrame("Menu");
         frame.setLocationRelativeTo(null);
@@ -361,7 +360,7 @@ class AccountMenuUI implements UI, ActionListener  {
     }
 }
 
-class ViewReservation implements UI,ActionListener {
+class ViewReservation   implements ActionListener {
         JFrame window;
         JList listOfReservations;
         JScrollPane scrollPane;
@@ -375,13 +374,13 @@ class ViewReservation implements UI,ActionListener {
             draw();
         }
 
-        @Override
+        
         public void draw() {       
         window = new JFrame("List of Reservations");
         window.setSize(350, 230);
         window.setResizable(false);
         window.setLocationRelativeTo(null);
-        window.setDefaultCloseOperation(window.EXIT_ON_CLOSE);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLayout(new BorderLayout());
 
         JPanel title = new JPanel();
@@ -472,7 +471,7 @@ class ViewReservation implements UI,ActionListener {
 }
     
 
-class MakeReservation implements UI,ActionListener {
+class MakeReservation   implements ActionListener {
     JFrame window;
     JTextField checkInDate, NoOfNights;
     JButton makeReservation, goBack;
@@ -492,7 +491,7 @@ class MakeReservation implements UI,ActionListener {
         checkInDate.setText(m.reservation.getStartDate());
     }
     
-    @Override
+   
     public void draw() {
         window = new JFrame("Make Your Reservation");
         window.setSize(350, 230);
@@ -561,7 +560,7 @@ class MakeReservation implements UI,ActionListener {
     }  
 }
 
-class ViewPossibleRooms implements UI,ActionListener {
+class ViewPossibleRooms   implements ActionListener {
         JFrame window;
         JList listOfRooms;
         JScrollPane scrollPane;
@@ -579,7 +578,7 @@ class ViewPossibleRooms implements UI,ActionListener {
             draw();
         }
 
-        @Override
+   
         public void draw() {       
         window = new JFrame("List of Rooms");
         window.setSize(350, 230);
