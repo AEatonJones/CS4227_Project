@@ -5,39 +5,9 @@ package hotel.room;
 public class BedRoom extends Room implements Visitable
 {
     private int nights;
-    /*private RoomDBReader reader;
-    
-    public BedRoom(int id) throws FileNotFoundException {
-        this.id = id;
-        reader = new RoomDBReader(id);
-    }
-    
-    @Override
-    public float getCost()
-    {
-        return reader.getCost() * nights;
-    }
 
-    @Override
-    public int getID()
-    {
-        return id;
-    }
-
-    @Override
-    public int getHotelID()
-    {
-        return reader.getHotel_ID();
-    }
-
-    @Override
-    public String getDescription()
-    {
-        return reader.getDescription();
-    }*/
-
-    public BedRoom(int id, int hotel_id, String description, float cost) {
-        super(id, hotel_id, description, cost);
+    public BedRoom(int id, String hotel_location, int no_of_single_beds, int no_of_double_beds, float cost) {
+        super(id, hotel_location, no_of_single_beds, no_of_double_beds, cost);
     }
 
     @Override

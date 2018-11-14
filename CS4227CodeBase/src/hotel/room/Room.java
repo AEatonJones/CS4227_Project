@@ -2,8 +2,9 @@ package hotel.room;
 
 public abstract class Room implements IRoom {
     protected int id;
-    protected int hotel_id;
-    protected String description;
+    protected String hotel_location;
+    protected int no_of_single_beds;
+    protected int no_of_double_beds;
     protected float cost;
     
     private BedRoom bedroom;
@@ -14,13 +15,18 @@ public abstract class Room implements IRoom {
     }
     
     @Override
-    public int getHotelID(){
-        return hotel_id;
+    public String getHotelLocation(){
+        return hotel_location;
     }
     
     @Override
-    public String getDescription(){
-        return description;
+    public int getSingleBeds(){
+        return no_of_single_beds;
+    }
+    
+    @Override
+    public int getDoubleBeds(){
+        return no_of_double_beds;
     }
     
     @Override
@@ -28,10 +34,11 @@ public abstract class Room implements IRoom {
         return cost;
     }
     
-    public Room(int id, int hotel_id, String description, float cost){
+    public Room(int id, String hotel_location, int no_of_single_beds, int no_of_double_beds, float cost){
         this.id = id;
-        this.hotel_id = hotel_id;
-        this.description = description;
+        this.hotel_location = hotel_location;
+        this.no_of_single_beds = no_of_single_beds;
+        this.no_of_double_beds = no_of_double_beds;
         this.cost = cost;
     }
     

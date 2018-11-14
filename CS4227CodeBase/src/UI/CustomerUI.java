@@ -6,6 +6,7 @@ import Command.Command;
 import Command.MakeReservationCommand;
 import Data.*;
 import Reservation.*;
+import hotel.room.RoomControl;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +17,8 @@ import java.util.logging.Logger;
 import javax.swing.*;
 
 public class CustomerUI implements UI {
-
+    private ReservationMemento m;
+    private Account a;
     /**
      * Constructor.
      */
@@ -26,6 +28,10 @@ public class CustomerUI implements UI {
     
     public void draw() {
         new CustomerLoginUI().draw();
+    }
+    
+    public void restoreBooking(ReservationMemento m,Account a) {
+        new MakeReservation().restoringBooking(a,m);
     }
 }
 
@@ -270,27 +276,21 @@ class CustomerRegister implements UI,ActionListener {
 }
 
 class AccountMenuUI implements UI, ActionListener  {
-        JFrame frame;
-        JButton makeReservation, viewReservation, quit, signOut;
-        Account account;
+    JFrame frame;
+    JButton checkIn, checkOut, makeReservation, viewReservation, quit, signOut;
+    Account account;
+
+    public void initilizeProfile(Account currentAccount) {
+        account = currentAccount;
+        draw();
+    }
         
-        /**
-        * Constructor.
-        */
-        public void initilizeProfile(Account currentAccount) {
-            account = currentAccount;
-            draw();
-        }
-        
-     /**
-     * Sets up GUI.
-     */
     @Override
     public void draw() {
         frame = new JFrame("Menu");
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200);
+        frame.setSize(600, 400);
         frame.setLayout(new GridLayout(1, 1));
 
         GridBagConstraints bag = new GridBagConstraints();
@@ -303,6 +303,14 @@ class AccountMenuUI implements UI, ActionListener  {
         JPanel buttons = new JPanel();
         buttons.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
         buttons.setLayout(new GridBagLayout());
+        
+        checkIn = new JButton("CHECK-IN");
+        checkIn.addActionListener(this);
+        buttons.add(checkIn, bag);
+        
+        checkOut = new JButton("CHECK-OUT");
+        checkOut.addActionListener(this);
+        buttons.add(checkOut, bag);
 
         makeReservation = new JButton("MAKE RESERVATION");
         makeReservation.addActionListener(this);
@@ -325,14 +333,17 @@ class AccountMenuUI implements UI, ActionListener  {
         frame.setVisible(true);
     }
 
-    /**
-     * If a button is pressed.
-     */
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton pressed = (JButton) e.getSource();
 
-        if(pressed.equals(makeReservation)) {
+        if(pressed.equals(checkIn)) {
+            //ability to check in your reservations
+        }
+        else if(pressed.equals(checkOut)) {
+            //ability to check out your reservations
+        }
+        else if(pressed.equals(makeReservation)) {
            this.frame.dispose();
            new MakeReservation().initilizeProfile(account);
         }
@@ -344,8 +355,9 @@ class AccountMenuUI implements UI, ActionListener  {
             this.frame.dispose();
             new CustomerLoginUI().draw();
         }
-        else
-            System.exit(0);
+        else if(pressed.equals(quit)) {
+            this.frame.dispose();
+        }
     }
 }
 
@@ -357,18 +369,12 @@ class ViewReservation implements UI,ActionListener {
         JButton cancelReservation, goBack;
         Account account = null;
         ArrayList<String> reservations;
-        
-        /**
-        * Constructor.
-        */
+
         public void initilizeProfile(Account currentAcount) {
             account = currentAcount;
             draw();
         }
 
-        /**
-        * Sets up GUI.
-        */
         @Override
         public void draw() {       
         window = new JFrame("List of Reservations");
@@ -389,7 +395,7 @@ class ViewReservation implements UI,ActionListener {
         reservations = null;
 
         try {
-            //adds box with reservations
+
             reservations = ReservationControl.obtainReservationInfo(account.getEmail());
         } catch (IOException ex) {
             Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
@@ -399,7 +405,7 @@ class ViewReservation implements UI,ActionListener {
             orderListModel.addElement(reservations.get(i));
         }
         
-        title.add(new JLabel("Email,Check-In Date,No. of Nights,Cost,Location"));
+        title.add(new JLabel("Email,Check-In Date,No. of Nights,Room-ID,Location,Cost"));
         input.add(scrollPane);
         window.add("North", title);
         window.add("Center", input);
@@ -419,10 +425,6 @@ class ViewReservation implements UI,ActionListener {
         window.setVisible(true);
         
     }
-
-        /**
-        * If a button is pressed.
-        */
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton pressed = (JButton)e.getSource();
@@ -435,12 +437,25 @@ class ViewReservation implements UI,ActionListener {
             for(String s:resDetails) {
                 System.out.println(s);
             }
-            Reservation r = Reservation.makeReservation(resDetails[0], resDetails[1], Integer.parseInt(resDetails[2]), resDetails[3],Float.parseFloat(resDetails[4]));
+            Reservation r = Reservation.makeReservation(resDetails[0], resDetails[1], Integer.parseInt(resDetails[2]), resDetails[3],resDetails[4],Float.parseFloat(resDetails[5]));
             Command cmd = new CancelReservationCommand(r,account);
             cmd.execute();
             
-            new RemovalConfirmation().initilizeProfile(account,cmd);
+            boolean removedConfirm = false;
+            while (!removedConfirm) {
+                int option = JOptionPane.showConfirmDialog(null, "You have just canceled your booking.\nHit Cancel if you wish to undo otherwise hit Ok.", "Confirmation", JOptionPane.OK_CANCEL_OPTION);
+                if(option == JOptionPane.OK_OPTION) {
 
+                    removedConfirm = true;
+                }
+                else if(option == JOptionPane.CANCEL_OPTION) {
+                    cmd.undo();
+                    
+                    removedConfirm = true;
+                }
+            }
+            
+            new AccountMenuUI().initilizeProfile(account);
             
         } catch (Exception ex) {
             Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
@@ -459,22 +474,24 @@ class ViewReservation implements UI,ActionListener {
 
 class MakeReservation implements UI,ActionListener {
     JFrame window;
-    JTextField checkInDate, NoOfNights, NoOfRooms;
+    JTextField checkInDate, NoOfNights;
     JButton makeReservation, goBack;
     JComboBox reservations;
     Account account;
     
-    /**
-    * Constructor.
-    */
     public void initilizeProfile(Account currentAcount) {
         account = currentAcount;
         draw();
         }
     
-    /**
-     * Sets up GUI.
-     */
+    void restoringBooking(Account a, ReservationMemento m) {
+        account = a;
+        draw();
+        
+        NoOfNights.setText(Integer.toString(m.reservation.getNoNights()));
+        checkInDate.setText(m.reservation.getStartDate());
+    }
+    
     @Override
     public void draw() {
         window = new JFrame("Make Your Reservation");
@@ -489,7 +506,7 @@ class MakeReservation implements UI,ActionListener {
         
         
         JPanel input = new JPanel();
-        input.setLayout(new GridLayout(4, 2));
+        input.setLayout(new GridLayout(3, 2));
         
         input.add(new JLabel("Check-In Date:"));
         input.add((checkInDate = new JTextField()));
@@ -497,20 +514,15 @@ class MakeReservation implements UI,ActionListener {
         input.add(new JLabel("No. of Nights:"));
         input.add((NoOfNights = new JTextField()));
         
-        input.add(new JLabel("No. of Rooms:"));
-        input.add((NoOfRooms = new JTextField()));
-        
         input.add(new JLabel("Location:"));
         input.add(reservations);
 
-       
         window.add("Center", input);
-        
-        
+
         JPanel buttons = new JPanel();
         buttons.setLayout(new FlowLayout());
         
-        makeReservation = new JButton("Make Reservation");
+        makeReservation = new JButton("Search");
         makeReservation.addActionListener(this);
         buttons.add(makeReservation);
         
@@ -522,39 +534,24 @@ class MakeReservation implements UI,ActionListener {
         window.setVisible(true);
     }
 
-    /**
-     * If a button is pressed.
-     */
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton pressed = (JButton)e.getSource();
-        
-        
+
         if(pressed.equals(makeReservation)) {
-
-
             try {
-                //send to database
                 String cID = checkInDate.getText();
                 int nON = Integer.parseInt(NoOfNights.getText());
-                int nOR = Integer.parseInt(NoOfRooms.getText());
                 String location = reservations.getSelectedItem().toString();
                 
-                Reservation r = Reservation.makeReservation(account.getEmail(), cID, nON, location);
-                Command cmd = new MakeReservationCommand(r,account);
-                cmd.execute();
-                
-                new ReservationConfirmation().initilizeProfile(account,cmd);
-                
-                
+                Reservation r = Reservation.makeReservation(account.getEmail(), cID, nON, location,"");
+                ReservationMemento m = new ReservationMemento(r,account);
+                new ViewPossibleRooms().initilizeProfile(account,r,m);
             } catch (Exception ex) {
                 Logger.getLogger(CustomerRegister.class.getName()).log(Level.SEVERE, null, ex);
             }
-          
-            
-            this.window.dispose();
-            
-        }
+        this.window.dispose();  
+        }     
         
         else if(pressed.equals(goBack))
         {
@@ -564,154 +561,128 @@ class MakeReservation implements UI,ActionListener {
     }  
 }
 
-class ReservationConfirmation implements UI, ActionListener {
-    
-    JFrame frame;
-    JButton yes,no;
-    Account account;
-    Command command;
-    
-    /**
-    * Constructor.
-    */
-    public void initilizeProfile(Account currentAccount, Command cmd) {
-        account = currentAccount;
-        command = cmd;
-        draw();
+class ViewPossibleRooms implements UI,ActionListener {
+        JFrame window;
+        JList listOfRooms;
+        JScrollPane scrollPane;
+        DefaultListModel orderListModel;
+        JButton MakeReservation, goBack;
+        Account account = null;
+        ArrayList<String> rooms;
+        Reservation reservation;
+        ReservationMemento mementoState;
+        
+        public void initilizeProfile(Account currentAcount, Reservation res, ReservationMemento m) {
+            account = currentAcount;
+            reservation = res;
+            mementoState = m;
+            draw();
         }
 
-    /**
-     * Sets up GUI.
-     */
-    @Override
-    public void draw() {
-        frame = new JFrame("Confirm Reservation");
+        @Override
+        public void draw() {       
+        window = new JFrame("List of Rooms");
+        window.setSize(350, 230);
+        window.setResizable(false);
+        window.setLocationRelativeTo(null);
+        window.setDefaultCloseOperation(window.EXIT_ON_CLOSE);
+        window.setLayout(new BorderLayout());
+
         JPanel title = new JPanel();
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200);
-        frame.setLayout(new GridLayout(1, 1));
+        JPanel input = new JPanel();
+        input.setLayout(new GridLayout(2, 1));
         
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.weightx = 1;
-        constraints.weighty = 1;
-        constraints.insets = new Insets(5, 0, 5, 0);
-        constraints.gridwidth = GridBagConstraints.REMAINDER;
-        constraints.fill = GridBagConstraints.BOTH;
+        scrollPane = new JScrollPane();
+        orderListModel = new DefaultListModel();
+        listOfRooms = new JList(orderListModel);
+        scrollPane.setViewportView(listOfRooms);
+        rooms = null;
+
+        try {
+            //adds box with rooms
+            rooms = RoomControl.obtainRoomInfo(reservation.getLocation());
+        } catch (IOException ex) {
+            Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
+        for(int i = 0; i < rooms.size() ;i++ ){
+            orderListModel.addElement(rooms.get(i));
+        }
+        
+        title.add(new JLabel("Select Available Room"));
+        input.add(new JLabel("(Room-ID,Location,Single Beds,Double Beds,Cost)"));
+        input.add(scrollPane);
+        window.add("North", title);
+        window.add("Center", input);
 
         JPanel buttons = new JPanel();
-        buttons.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
-        buttons.setLayout(new GridBagLayout());
+        buttons.setLayout(new GridLayout(1, 2));
         
-        yes = new JButton("Yes");
-        yes.addActionListener(this);
-        buttons.add(yes, constraints);
+        MakeReservation = new JButton("Select Room");
+        MakeReservation.addActionListener(this);
+        buttons.add(MakeReservation);
+        goBack = new JButton("Go Back");
+        goBack.addActionListener(this);
+        buttons.add(goBack);
         
-        no = new JButton("No");
-        no.addActionListener(this);
-        buttons.add(no, constraints);      
+        window.add("South", buttons);
+        window.setVisible(true);
         
-        frame.add(buttons);
-             
-        frame.setVisible(true);
     }
 
-    /**
-     * If a button is pressed.
-     */
+        /**
+        * If a button is pressed.
+        */
     @Override
     public void actionPerformed(ActionEvent e) {
-        JButton pressed = (JButton) e.getSource();
+        JButton pressed = (JButton)e.getSource();
         
-        if(pressed.equals(yes)) {
-            this.frame.dispose();
-            new AccountMenuUI().initilizeProfile(account);
+    if(pressed.equals(MakeReservation)) {
+        try {
+            String room = listOfRooms.getSelectedValue().toString();
+            String[] roomDetails = room.split(",");
+            reservation.setRoomID(roomDetails[0]);
             
-        }
-        else if(pressed.equals(no)) {
-            command.undo();
-            this.frame.dispose();
-            new AccountMenuUI().initilizeProfile(account);
-        }
-        else
-            System.exit(0);
-    }
-}
-
-class RemovalConfirmation implements UI, ActionListener {
-    
-    JFrame frame;
-    JButton yes,no;
-    Account account;
-    Command command;
-    
-    /**
-    * Constructor.
-    */
-    public void initilizeProfile(Account currentAccount, Command cmd) {
-        account = currentAccount;
-        command = cmd;
-        draw();
-        }
-
-    /**
-     * Sets up GUI.
-     */
-    @Override
-    public void draw() {
-        frame = new JFrame("Removal Confirmation");
-        JPanel title = new JPanel();
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200);
-        frame.setLayout(new GridLayout(1, 1));
-        
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.weightx = 1;
-        constraints.weighty = 1;
-        constraints.insets = new Insets(5, 0, 5, 0);
-        constraints.gridwidth = GridBagConstraints.REMAINDER;
-        constraints.fill = GridBagConstraints.BOTH;
-        
-
-        JPanel buttons = new JPanel();
-        buttons.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
-        buttons.setLayout(new GridBagLayout());
-        
-        yes = new JButton("Yes");
-        yes.addActionListener(this);
-        buttons.add(yes, constraints);
-        
-        no = new JButton("No");
-        no.addActionListener(this);
-        buttons.add(no, constraints);      
-        
-        frame.add(buttons);
-             
-        frame.setVisible(true);
-    }
-
-    /**
-     * If a button is pressed.
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JButton pressed = (JButton) e.getSource();
-        
-        if(pressed.equals(yes)) {
-            this.frame.dispose();
-            new AccountMenuUI().initilizeProfile(account);
+            //set the cost which is given in the room and passed into the payment controller
+            Command cmd = new MakeReservationCommand(reservation,account);
+            cmd.execute();
+            boolean bookedConfirm = false;
+            boolean anotherBooking = false;
             
+            while (!bookedConfirm) {
+                int option = JOptionPane.showConfirmDialog(null, "You have just reservered your booking\nHit Cancel if you wish to undo otherwise hit Ok.", "Confirmation", JOptionPane.OK_CANCEL_OPTION);
+                if(option == JOptionPane.OK_OPTION) {
+                    bookedConfirm = true;
+                }
+                else if(option == JOptionPane.CANCEL_OPTION) {
+                    cmd.undo();
+                    bookedConfirm = true;
+                }
+            }
+            
+            while (!anotherBooking) {
+                int option = JOptionPane.showConfirmDialog(null, "Would you like to reserve another booking?.", "Another Booking?", JOptionPane.OK_CANCEL_OPTION);
+                if(option == JOptionPane.OK_OPTION) {
+                    mementoState.restoreState(mementoState,account);
+                    anotherBooking = true;
+                }
+                else if(option == JOptionPane.CANCEL_OPTION) {
+                    new AccountMenuUI().initilizeProfile(account);
+                    anotherBooking = true;
+                }
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
         }
-        else if(pressed.equals(no)) {
-            command.undo();
-            this.frame.dispose();
-            new AccountMenuUI().initilizeProfile(account);
-        }
-        else
-            System.exit(0);
+        this.window.dispose();
+    }
+    
+    else if(pressed.equals(goBack)) { 
+        mementoState.restoreState(mementoState,account);
+        this.window.dispose();
+    }
+    
+        
     }
 }
