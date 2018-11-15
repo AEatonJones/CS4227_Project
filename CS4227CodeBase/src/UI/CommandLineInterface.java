@@ -13,21 +13,29 @@ import Account.Account;
 import Account.AccountControl;
 import Command.*;
 import Reservation.Reservation;
-import Reservation.ReservationMemento;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 public class CommandLineInterface implements UI {
+    
+    public CommandLineInterface(){
+        drawLogIn();
+    }
 
+    String email;
     Reservation reservation = null;
     Account currentAccount = null;
     Scanner in = new Scanner(System.in);
     @Override
     public void drawSignIn() {
         
-        System.out.println("PLEASE NETER EMAIL, OR PLEASE ENTER LOGOUT TO LOGOUT");
+        System.out.println("PLEASE ENTER EMAIL, OR PLEASE ENTER LOGOUT TO LOGOUT");
         String potentialEmail = in.nextLine();
+        email = potentialEmail;
         if(potentialEmail.equals("LOGOUT")){
             drawLogIn();
         }
@@ -73,37 +81,62 @@ public class CommandLineInterface implements UI {
            case 1: drawMakeReservations(); break;
            case 2: drawViewReservations(); break;
            case 3: drawLogIn(); break;
-           case 4: System.out.println("GOODBYE"); break;
+           case 4: System.out.println("GOODBYE"); System.exit(0); break;
            }
     }
 
     @Override
     public void drawViewReservations() {
+        
+        
+        String line;
+        BufferedReader bufferedReader = null;
+            try {
+                bufferedReader = new BufferedReader(new FileReader("src/resources/reservations.txt"));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(CommandLineInterface.class.getName()).log(Level.SEVERE, null, ex);
+            }             
+        try {
+            while ((line = bufferedReader.readLine()) != null) {
+            if(line.startsWith(email.trim())){
+                System.out.println(line);
+            }
+        }
         System.out.println("1)CANCEL RESERVATION 2)BACK");
-        int input = Integer.parseInt(in.nextLine());
-        switch(input){
-           case 1: System.out.println("NOT SUPPORTED."); break;
-           case 2: drawMainMenu(); break;
-           }
+        String input = in.nextLine();
+        if(input.equals("1")){
+        
+                System.out.println("PLEASE ENTER RESERVATION TO BE CANCELLED IN CORRECT FORMAT. 2)BACK");
+                input = in.nextLine();
+                if(input.equals("2")){
+                    drawMainMenu();
+                }
+                else{
+                    
+                }
+                }
+        } catch (IOException ex) {
+            Logger.getLogger(CommandLineInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+drawMainMenu();
+          
     }
 
     @Override
     public void drawMakeReservations() {
         System.out.println("PLEASE ENTER CHECK IN DATE, OR PLEASE ENTER BACK TO GO BACK.");
-        String checkInDate = in.nextLine();
-        if(checkInDate.equals("BACK")){
+        String cID = in.nextLine();
+        if(cID.equals("BACK")){
             drawMainMenu();
         }
         else
                 try {
-                    System.out.println("PLEASE ENTER CHECK IN DATE.");
-                    String cID = in.nextLine();
                     System.out.println("PLEASE ENTER NUMBER OF NIGHTS");
                     int nON = Integer.parseInt(in.nextLine());
-                    System.out.println("PLEASE ENTER LOCATION");
+                    System.out.println("PLEASE ENTER LOCATION IS CASE SENSITIVE.");
                     String location = in.nextLine();
 
-                    Reservation r = Reservation.makeReservation(currentAccount.getEmail(), cID, nON, location,"");
+                    reservation = Reservation.makeReservation(currentAccount.getEmail(), cID, nON, location,"");
                     drawAvailableRooms();
                 } catch (Exception ex) {
                     Logger.getLogger(CustomerUI.CustomerRegister.class.getName()).log(Level.SEVERE, null, ex);
@@ -113,22 +146,44 @@ public class CommandLineInterface implements UI {
     @Override
     public void drawAvailableRooms() {
         System.out.println("PLEASE SELECT A ROOM PLEASE ENTER ROOM ID 2)BACK");
-        int input = Integer.parseInt(in.nextLine());
+        String input = in.nextLine();
         String room = null;
-        if(input == 2){
+        if(input.equals("2")){
            drawMakeReservations();
            }
-        else 
-           
-       if(!(input == 2)){
-           System.out.println("CAN YOU CONFIRM RESERVATION 1)YES 2)NO");
-           input = Integer.parseInt(in.nextLine());
-           if(input == 1){
-           new MakeReservationCommand(reservation, currentAccount).execute();
-           }
-           else
-              new CancelReservationCommand(reservation, currentAccount).execute(); 
-       }
+        else {
+            try {
+                String line;
+                BufferedReader bufferedReader = new BufferedReader(new FileReader("src/resources/rooms.txt"));
+                while ((line = bufferedReader.readLine()) != null) {
+                if(line.startsWith(input.trim())){
+                    System.out.println(line + " CAN YOU CONFIRM CORRECT ROOM 1)YES 2)NO.");
+                    input = in.nextLine();
+                    if(input.equals("1")){
+                         System.out.println("CAN YOU CONFIRM RESERVATION 1)YES 2)NO");
+                         input = in.nextLine();
+                         if(input.equals("1")){
+                         new MakeReservationCommand(reservation, currentAccount).execute();
+                         drawMainMenu();
+                         }
+                         else
+                          new CancelReservationCommand(reservation, currentAccount).execute(); 
+                         drawMainMenu();
+                        }
+                    }
+                drawAvailableRooms();
+                }
+                
+                bufferedReader.close();
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(CommandLineInterface.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            
+            } 
     }
+      
 
 }
