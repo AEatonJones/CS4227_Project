@@ -9,22 +9,41 @@ package UI;
  *
  * @author hmaug
  */
+import Account.Account;
+import Account.AccountControl;
 import Command.*;
+import Reservation.Reservation;
+import Reservation.ReservationMemento;
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 public class CommandLineInterface implements UI {
 
+    Reservation reservation = null;
+    Account currentAccount = null;
     Scanner in = new Scanner(System.in);
     @Override
     public void drawSignIn() {
         
-        System.out.println("PLEASE NETER USERNAME, OR PLEASE ETER LOGOUT TO LOGOUT");
-        String username = in.nextLine();
-        if(username.equals("LOGOUT")){
+        System.out.println("PLEASE NETER EMAIL, OR PLEASE ENTER LOGOUT TO LOGOUT");
+        String potentialEmail = in.nextLine();
+        if(potentialEmail.equals("LOGOUT")){
             drawLogIn();
         }
         System.out.println("PLEASE ENTER PASSWORD.");
-        String password = in.nextLine();
-        drawMainMenu();
+        String potentialPassword = in.nextLine();
+        try {
+            currentAccount = AccountControl.verifyAccount(potentialEmail,potentialPassword);
+        } catch (IOException ex) {
+            Logger.getLogger(CommandLineInterface.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                    if(currentAccount != null) {
+                        drawMainMenu();
+                    }
+                    else {
+                        System.out.println("Invalid Information given!");
+                    }
     }
 
     @Override
@@ -75,33 +94,41 @@ public class CommandLineInterface implements UI {
         if(checkInDate.equals("BACK")){
             drawMainMenu();
         }
-        System.out.println("PLEASE ENTER NUMBER OF NIGHTS.");
-        String numberOfNights = in.nextLine();
-        System.out.println("PLEASE ENTER A LOCATION.");
-        String location = in.nextLine();
-        drawAvailableRooms();
-    }
+        else
+                try {
+                    System.out.println("PLEASE ENTER CHECK IN DATE.");
+                    String cID = in.nextLine();
+                    System.out.println("PLEASE ENTER NUMBER OF NIGHTS");
+                    int nON = Integer.parseInt(in.nextLine());
+                    System.out.println("PLEASE ENTER LOCATION");
+                    String location = in.nextLine();
+
+                    Reservation r = Reservation.makeReservation(currentAccount.getEmail(), cID, nON, location,"");
+                    drawAvailableRooms();
+                } catch (Exception ex) {
+                    Logger.getLogger(CustomerUI.CustomerRegister.class.getName()).log(Level.SEVERE, null, ex);
+                }
+    } 
 
     @Override
     public void drawAvailableRooms() {
-        System.out.println("PLEASE SELECT A ROOM 1)ROOM101 2)R0OM102 3) ROOM103 4)BACK");
+        System.out.println("PLEASE SELECT A ROOM PLEASE ENTER ROOM ID 2)BACK");
         int input = Integer.parseInt(in.nextLine());
         String room = null;
-       switch(input){
-           case 1: room = "101,London,1,0,25"; break;
-           case 2: room = "102,London,2,1,100"; break;
-           case 3: room = "103,London,1,0,25"; break;
-           case 4: drawMakeReservations(); break;
+        if(input == 2){
+           drawMakeReservations();
            }
-       if(!(room.equals("GOODBYE"))){
+        else 
+           
+       if(!(input == 2)){
            System.out.println("CAN YOU CONFIRM RESERVATION 1)YES 2)NO");
            input = Integer.parseInt(in.nextLine());
            if(input == 1){
-           new MakeReservationCommand(reservation, account).execute();
+           new MakeReservationCommand(reservation, currentAccount).execute();
            }
            else
-              new CancelReservationCommand(reservation, account).execute(); 
+              new CancelReservationCommand(reservation, currentAccount).execute(); 
        }
     }
-    
+
 }
