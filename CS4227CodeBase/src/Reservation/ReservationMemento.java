@@ -1,6 +1,7 @@
 package Reservation;
 import Account.Account;
 import UI.CustomerUI;
+import java.awt.event.ActionListener;
 
 public class ReservationMemento {
     public Reservation reservation;
@@ -28,5 +29,10 @@ public class ReservationMemento {
     
     public void restoreState(ReservationMemento reservation, Account account) {
         new UI.CustomerUI().restoreBooking(reservation,account);
+    }
+    
+    
+    public void restoreState(ReservationMemento reservation, Account account, ActionListener listener) {
+        new UI.CustomerUI().restoreBooking(reservation,account, listener);
     }
 }

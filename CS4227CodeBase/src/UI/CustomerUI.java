@@ -33,6 +33,9 @@ public class CustomerUI   {
         new MakeReservation().restoringBooking(a,m);
     }
 
+    public void restoreBooking(ReservationMemento m,Account a, ActionListener listener) {
+        new MakeReservation(listener).restoringBooking(a,m);
+    }
 
     class CustomerLoginUI  implements ActionListener {
 
@@ -162,7 +165,7 @@ public class CustomerUI   {
 
             signIn = new JButton("Sign In");
             signIn.addActionListener(listener);
-            signIn.setActionCommand("Sign in");
+            signIn.setActionCommand("Sign In");
             buttons.add(signIn);
 
             goBack = new JButton("Go Back");
@@ -545,10 +548,9 @@ public class CustomerUI   {
             this.listener = this;
         }
 
-        public MakeReservation(Account currentAccount, ActionListener listener)
+        public MakeReservation(ActionListener listener)
         {
             this.listener = listener;
-            account = currentAccount;
         }
 
         public void initilizeProfile(Account currentAcount) {
@@ -665,55 +667,55 @@ public class CustomerUI   {
             }
 
             public void draw() {       
-            window = new JFrame("List of Rooms");
-            window.setSize(350, 230);
-            window.setResizable(false);
-            window.setLocationRelativeTo(null);
-            window.setDefaultCloseOperation(window.EXIT_ON_CLOSE);
-            window.setLayout(new BorderLayout());
+                window = new JFrame("List of Rooms");
+                window.setSize(350, 230);
+                window.setResizable(false);
+                window.setLocationRelativeTo(null);
+                window.setDefaultCloseOperation(window.EXIT_ON_CLOSE);
+                window.setLayout(new BorderLayout());
 
-            JPanel title = new JPanel();
-            JPanel input = new JPanel();
-            input.setLayout(new GridLayout(2, 1));
+                JPanel title = new JPanel();
+                JPanel input = new JPanel();
+                input.setLayout(new GridLayout(2, 1));
 
-            scrollPane = new JScrollPane();
-            orderListModel = new DefaultListModel();
-            listOfRooms = new JList(orderListModel);
-            scrollPane.setViewportView(listOfRooms);
-            rooms = null;
+                scrollPane = new JScrollPane();
+                orderListModel = new DefaultListModel();
+                listOfRooms = new JList(orderListModel);
+                scrollPane.setViewportView(listOfRooms);
+                rooms = null;
 
-            try {
-                //adds box with rooms
-                rooms = RoomControl.obtainRoomInfo(reservation.getLocation());
-            } catch (IOException ex) {
-                Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                try {
+                    //adds box with rooms
+                    rooms = RoomControl.obtainRoomInfo(reservation.getLocation());
+                } catch (IOException ex) {
+                    Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-            for(int i = 0; i < rooms.size() ;i++ ){
-                orderListModel.addElement(rooms.get(i));
-            }
+                for(int i = 0; i < rooms.size() ;i++ ){
+                    orderListModel.addElement(rooms.get(i));
+                }
 
-            title.add(new JLabel("Select Available Room"));
-            input.add(new JLabel("(Room-ID,Location,Single Beds,Double Beds,Cost)"));
-            input.add(scrollPane);
-            window.add("North", title);
-            window.add("Center", input);
+                title.add(new JLabel("Select Available Room"));
+                input.add(new JLabel("(Room-ID,Location,Single Beds,Double Beds,Cost)"));
+                input.add(scrollPane);
+                window.add("North", title);
+                window.add("Center", input);
 
-            JPanel buttons = new JPanel();
-            buttons.setLayout(new GridLayout(1, 2));
+                JPanel buttons = new JPanel();
+                buttons.setLayout(new GridLayout(1, 2));
 
-            MakeReservation = new JButton("Select Room");
-            MakeReservation.addActionListener(listener);
-            MakeReservation.setActionCommand("Select Room");
-            buttons.add(MakeReservation);
+                MakeReservation = new JButton("Select Room");
+                MakeReservation.addActionListener(listener);
+                MakeReservation.setActionCommand("Select Room");
+                buttons.add(MakeReservation);
 
-            goBack = new JButton("Go Back");
-            goBack.addActionListener(listener);
-            goBack.setActionCommand("Rooms Go Back");
-            buttons.add(goBack);
+                goBack = new JButton("Go Back");
+                goBack.addActionListener(listener);
+                goBack.setActionCommand("Rooms Go Back");
+                buttons.add(goBack);
 
-            window.add("South", buttons);
-            window.setVisible(true);
+                window.add("South", buttons);
+                window.setVisible(true);
 
         }
 
