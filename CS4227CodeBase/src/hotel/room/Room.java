@@ -8,6 +8,8 @@ public abstract class Room implements IRoom {
     protected float cost;
     
     private BedRoom bedroom;
+    private Gym gym;
+    private FunctionRoom functionRoom;
     
     @Override
     public int getID(){
@@ -41,14 +43,7 @@ public abstract class Room implements IRoom {
         this.no_of_double_beds = no_of_double_beds;
         this.cost = cost;
     }
-    
-    @Override
-    public void acceptRoomVisitor(RoomVisitor visitor){
-        bedroom.acceptRoomVisitor(visitor);
-        visitor.visit((BedRoom)this);
-        //!!
-    }
-    
+        
     @Override
     public String toString() {
         return getClass().getSimpleName();
