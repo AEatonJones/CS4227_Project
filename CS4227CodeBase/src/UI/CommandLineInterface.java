@@ -33,10 +33,10 @@ public class CommandLineInterface implements UI {
     @Override
     public void drawSignIn() {
         
-        System.out.println("PLEASE ENTER EMAIL, OR PLEASE ENTER LOGOUT TO LOGOUT");
+        System.out.println("PLEASE ENTER EMAIL, (2 LOGOUT");
         String potentialEmail = in.nextLine();
         email = potentialEmail;
-        if(potentialEmail.equals("LOGOUT")){
+        if(potentialEmail.equals("2")){
             drawLogIn();
         }
         System.out.println("PLEASE ENTER PASSWORD.");
