@@ -8,8 +8,6 @@ public abstract class Room implements IRoom {
     protected float cost;
     
     private BedRoom bedroom;
-    private Gym gym;
-    private FunctionRoom functionRoom;
     
     @Override
     public int getID(){

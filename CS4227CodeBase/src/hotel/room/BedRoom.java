@@ -14,4 +14,5 @@ public class BedRoom extends Room implements Visitable
     public void acceptRoomVisitor(RoomVisitor visitor) {
         visitor.visit(this);
     }
+    
 }

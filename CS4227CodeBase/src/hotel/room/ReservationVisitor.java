@@ -2,33 +2,36 @@ package hotel.room;
 
 public class ReservationVisitor implements RoomVisitor {
     
-    private int bedroomCount;
-    private int gymCount;
-    private int functionRoomCount;
+    private int londonCount;
+    private int parisCount;
+    private float londonMoney;
+    private float parisMoney;
     
     public ReservationVisitor(){
-        bedroomCount = 0;
-        gymCount = 0;
-        functionRoomCount = 0;
+        londonCount = 0;
+        parisCount = 0;
+        londonMoney = 0;
+        parisMoney = 0;
     }
 
     @Override
-    public void visit(FunctionRoom functionroom) {
-        functionRoomCount++;
-    }
-    
-    @Override
     public void visit(BedRoom bedroom) {
-        bedroomCount++;
-    }
-    
-    @Override 
-    public void visit(Gym gym) {
-        gymCount++;
+        String location = bedroom.getHotelLocation();
+        if(location.equalsIgnoreCase("London"))
+        {
+            londonCount++;
+            londonMoney += bedroom.getCost();
+        }
+        else if(location.equalsIgnoreCase("Paris"))
+        {
+            parisCount++;
+            parisMoney += bedroom.getCost();
+        }
+        
     }
     
     public void visit(IRoom room){
-        System.out.println("Booked:\n" + bedroomCount + " bedrooms\n" + gymCount + " gym passes\n" + functionRoomCount + " function rooms\n");
+        System.out.println(londonCount + " rooms booked in London, earning €" + londonMoney + "\n" + parisCount + " rooms in Paris, earing €" + parisMoney);
     }
     
 }
