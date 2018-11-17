@@ -12,6 +12,6 @@ import Account.Account;
  * @author hmaug
  */
 public interface Interceptor {
-    
-    public abstract void logger(Account account, String action);
+    public static final String ACTION = null;
+    public abstract void logger(Account account);
 }
