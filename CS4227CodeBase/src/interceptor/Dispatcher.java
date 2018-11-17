@@ -5,25 +5,43 @@
  */
 package interceptor;
 
+import Account.Account;
+import java.util.*;
+
 /**
  *
  * @author hmaug
  */
 public class Dispatcher {
+    private ArrayList<Interceptor> iterateList = new ArrayList<>();
+    private Interceptor currentInterceptor;
+    private static Dispatcher instance = null;
     
-    public void dispatch(){
+    public static Dispatcher getInstance()
+    {
+        if(instance == null)
+            instance = new Dispatcher();
         
+        return instance;
     }
     
-    public void register(){
-        
+    public Interceptor dispatch(){
+        return currentInterceptor;
     }
     
-    public void remove(){
-        
+    public void register(Interceptor interceptor){
+        iterateList.add(interceptor);
     }
     
-    public void iterate_list(){
-        
+    public void remove(Interceptor interceptor){
+        iterateList.remove(interceptor);
+    }
+    
+    public void setCurrentInterceptor(String action, Account account){
+        switch(action){
+                case "Login":   currentInterceptor = new LoginInterceptor(account); break;
+                case "Logout":  currentInterceptor = new LogoutInterceptor(account); break;
+                default:        currentInterceptor = null;
+    }  
     }
 }
