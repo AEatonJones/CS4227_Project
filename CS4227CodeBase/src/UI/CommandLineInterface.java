@@ -13,6 +13,8 @@ import Account.Account;
 import Account.AccountControl;
 import Command.*;
 import Reservation.Reservation;
+import interceptor.Dispatcher;
+import interceptor.Interceptor;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -33,12 +35,10 @@ public class CommandLineInterface implements UI {
     @Override
     public void drawSignIn() {
         
-        System.out.println("PLEASE ENTER EMAIL, (2 LOGOUT");
+        System.out.println("PLEASE ENTER EMAIL.");
         String potentialEmail = in.nextLine();
         email = potentialEmail;
-        if(potentialEmail.equals("2")){
-            drawLogIn();
-        }
+
         System.out.println("PLEASE ENTER PASSWORD.");
         String potentialPassword = in.nextLine();
         try {
@@ -47,6 +47,10 @@ public class CommandLineInterface implements UI {
             Logger.getLogger(CommandLineInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
                     if(currentAccount != null) {
+                        Dispatcher dispatcher = Dispatcher.getInstance();
+                        dispatcher.setCurrentInterceptor("Login", currentAccount);
+                        Interceptor interceptor = dispatcher.dispatch();
+                        interceptor.logger(currentAccount);
                         drawMainMenu();
                     }
                     else {
@@ -62,16 +66,27 @@ public class CommandLineInterface implements UI {
 
     @Override
     public void drawLogIn() {
-       System.out.println("WELCOME! 1)SIGN IN 2)REGISTER 3)QUIT");
+       System.out.println("WELCOME! 1)SIGN IN 2)REGISTER 3)QUIT 4)ADD MOD");
        int input = Integer.parseInt(in.nextLine());
        switch(input){
            case 1: drawSignIn(); break;
            case 2: drawRegister(); break;
-           case 3: System.out.println("GOODBYE"); break;
+           case 3: System.out.println("GOODBYE");
+                   Dispatcher dispatcher = Dispatcher.getInstance();
+                   dispatcher.setCurrentInterceptor("Logout", currentAccount);
+                   Interceptor interceptor = dispatcher.dispatch();
+                   interceptor.logger(currentAccount);
+                   break;
+           case 4: drawModMenu(); break;
            }
+    }
+     
+     public void drawModMenu(){
+         System.out.println("i hate/love you jack");
+     }
       
        
-    }
+    
 
     @Override
     public void drawMainMenu() {
@@ -81,7 +96,13 @@ public class CommandLineInterface implements UI {
            case 1: drawMakeReservations(); break;
            case 2: drawViewReservations(); break;
            case 3: drawLogIn(); break;
-           case 4: System.out.println("GOODBYE"); System.exit(0); break;
+           case 4: System.out.println("GOODBYE"); 
+                   System.exit(0); 
+                   Dispatcher dispatcher = Dispatcher.getInstance();
+                   dispatcher.setCurrentInterceptor("Logout", currentAccount);
+                   Interceptor interceptor = dispatcher.dispatch();
+                   interceptor.logger(currentAccount);
+                   break;
            }
     }
 
@@ -184,6 +205,7 @@ drawMainMenu();
             
             } 
     }
+
       
 
 }

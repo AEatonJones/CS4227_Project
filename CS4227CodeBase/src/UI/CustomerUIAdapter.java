@@ -16,6 +16,8 @@ import Reservation.ReservationVisitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import UI.CustomerUI.*;
+import interceptor.Dispatcher;
+import interceptor.Interceptor;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,6 +60,10 @@ public class CustomerUIAdapter implements UI , ActionListener{
 
     @Override
     public void drawLogIn() {
+        Dispatcher dispatcher = Dispatcher.getInstance();
+        dispatcher.setCurrentInterceptor("Login", account);
+        Interceptor interceptor = dispatcher.dispatch();
+        interceptor.logger(account);
         login = ui.new CustomerLoginUI(this);
         login.draw();
     }
@@ -137,6 +143,10 @@ public class CustomerUIAdapter implements UI , ActionListener{
     
     private void quit()
     {
+        Dispatcher dispatcher = Dispatcher.getInstance();
+        dispatcher.setCurrentInterceptor("Logout", account);
+        Interceptor interceptor = dispatcher.dispatch();
+        interceptor.logger(account);
         System.exit(0);
     }
     
