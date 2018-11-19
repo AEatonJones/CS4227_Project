@@ -1,6 +1,6 @@
 package hotel.room;
 
-public interface IRoom extends Visitable {
+public interface IRoom {
     
     public int getID();
     public String getHotelLocation();
@@ -8,5 +8,4 @@ public interface IRoom extends Visitable {
     public int getDoubleBeds();
     public float getCost();
     
-    public void acceptRoomVisitor(RoomVisitor visitor);
 }

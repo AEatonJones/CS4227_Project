@@ -23,7 +23,7 @@ public class RoomControl {
     return room;
     }
     
-    public static ArrayList<BedRoom> roomsReserved() throws IOException {
+    /*public static ArrayList<BedRoom> roomsReserved() throws IOException {
     ArrayList<BedRoom> room = new ArrayList<BedRoom>();
     String filepath = ".\\src\\resources\\reservations.txt";
     String anotherFilepath = ".\\src\\resources\\rooms.txt";
@@ -45,7 +45,7 @@ public class RoomControl {
         }
     }
     return room;
-    }
+    }*/
     
     public static Float getRoomCost(String location,String RoomID) throws IOException {
     String filepath = ".\\src\\resources\\rooms.txt";
