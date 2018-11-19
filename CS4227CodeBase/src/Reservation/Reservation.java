@@ -2,7 +2,7 @@ package Reservation;
 
 import java.io.FileWriter;
 
-public class Reservation 
+public class Reservation implements Visitable
 {
     private String accountEmail;
     private String startDate;
@@ -80,5 +80,11 @@ public class Reservation
     public String toString()
     {
         return (accountEmail + "," + startDate + "," + noNights + "," + roomID + "," + Location + "," + String.format("%.2f", cost));
+    }
+
+    @Override
+    public void acceptRoomVisitor(Visitor visitor)
+    {
+        visitor.visit(this);
     }
 }

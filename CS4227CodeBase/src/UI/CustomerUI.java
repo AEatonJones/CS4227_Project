@@ -742,6 +742,10 @@ public class CustomerUI   {
                     int option = JOptionPane.showConfirmDialog(null, "You have just reservered your booking\nHit Cancel if you wish to undo otherwise hit Ok.", "Confirmation", JOptionPane.OK_CANCEL_OPTION);
                     if(option == JOptionPane.OK_OPTION) {
                         bookedConfirm = true;
+                        //Use visitor to visit room:
+                            //Using room data, construct room object
+                            //Make visitor singleton to keep data consistent
+                            //Use txt file to preserve visitor data
                     }
                     else if(option == JOptionPane.CANCEL_OPTION) {
                         cmd.undo();

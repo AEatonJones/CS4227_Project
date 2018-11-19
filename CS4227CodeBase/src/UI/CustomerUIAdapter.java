@@ -12,6 +12,7 @@ import Command.Command;
 import Command.MakeReservationCommand;
 import Reservation.Reservation;
 import Reservation.ReservationMemento;
+import Reservation.ReservationVisitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import UI.CustomerUI.*;
@@ -276,42 +277,43 @@ public class CustomerUIAdapter implements UI , ActionListener{
     private void selectRoom()
     {
         try {
-                String room = rooms.listOfRooms.getSelectedValue().toString();
-                String[] roomDetails = room.split(",");
-                reservation.setRoomID(roomDetails[0]);
+            String room = rooms.listOfRooms.getSelectedValue().toString();
+            String[] roomDetails = room.split(",");
+            reservation.setRoomID(roomDetails[0]);
 
-                //set the cost which is given in the room and passed into the payment controller
-                Command cmd = new MakeReservationCommand(reservation,account);
-                cmd.execute();
-                boolean bookedConfirm = false;
-                boolean anotherBooking = false;
+            //set the cost which is given in the room and passed into the payment controller
+            Command cmd = new MakeReservationCommand(reservation,account);
+            cmd.execute();
+            boolean bookedConfirm = false;
+            boolean anotherBooking = false;
 
-                while (!bookedConfirm) {
-                    int option = JOptionPane.showConfirmDialog(null, "You have just reservered your booking\nHit Cancel if you wish to undo otherwise hit Ok.", "Confirmation", JOptionPane.OK_CANCEL_OPTION);
-                    if(option == JOptionPane.OK_OPTION) {
-                        bookedConfirm = true;
-                    }
-                    else if(option == JOptionPane.CANCEL_OPTION) {
-                        cmd.undo();
-                        bookedConfirm = true;
-                    }
+            while (!bookedConfirm) {
+                int option = JOptionPane.showConfirmDialog(null, "You have just reservered your booking\nHit Cancel if you wish to undo otherwise hit Ok.", "Confirmation", JOptionPane.OK_CANCEL_OPTION);
+                if(option == JOptionPane.OK_OPTION) {
+                    bookedConfirm = true;
+                    reservation.acceptRoomVisitor(ReservationVisitor.getInstance());
                 }
-
-                while (!anotherBooking) {
-                    int option = JOptionPane.showConfirmDialog(null, "Would you like to reserve another booking?.", "Another Booking?", JOptionPane.OK_CANCEL_OPTION);
-                    if(option == JOptionPane.OK_OPTION) {
-                        memento.restoreState(memento,account);
-                        anotherBooking = true;
-                    }
-                    else if(option == JOptionPane.CANCEL_OPTION) {
-                        menu = ui.new AccountMenuUI(account, this);
-                        anotherBooking = true;
-                    }
+                else if(option == JOptionPane.CANCEL_OPTION) {
+                    cmd.undo();
+                    bookedConfirm = true;
                 }
-
-            } catch (Exception ex) {
-                Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
             }
-            rooms.window.dispose();
+
+            while (!anotherBooking) {
+                int option = JOptionPane.showConfirmDialog(null, "Would you like to reserve another booking?.", "Another Booking?", JOptionPane.OK_CANCEL_OPTION);
+                if(option == JOptionPane.OK_OPTION) {
+                    memento.restoreState(memento,account);
+                    anotherBooking = true;
+                }
+                else if(option == JOptionPane.CANCEL_OPTION) {
+                    menu = ui.new AccountMenuUI(account, this);
+                    anotherBooking = true;
+                }
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        rooms.window.dispose();
     }
 }
