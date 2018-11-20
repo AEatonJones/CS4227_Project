@@ -8,10 +8,6 @@ package interceptor;
 import account.Account;
 import java.util.*;
 
-/**
- *
- * @author hmaug
- */
 public class Dispatcher {
     private ArrayList<Interceptor> iterateList = new ArrayList<>();
     private Interceptor currentInterceptor;

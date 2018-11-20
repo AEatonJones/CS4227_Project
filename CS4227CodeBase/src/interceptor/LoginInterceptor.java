@@ -13,7 +13,7 @@ public class LoginInterceptor implements Interceptor{
     Account account;
 
 
-    LoginInterceptor(Account account) {
+    public LoginInterceptor(Account account) {
         this.account = account;
 
     }

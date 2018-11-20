@@ -5,6 +5,10 @@ import command.MakeReservationCommand;
 import account.Account;
 import account.AccountControl;
 import reservation.Reservation;
+import interceptor.Dispatcher;
+import interceptor.Interceptor;
+import interceptor.LoginInterceptor;
+import interceptor.LogoutInterceptor;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -38,6 +42,10 @@ public class CommandLineInterface implements UI {
             Logger.getLogger(CommandLineInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
                     if(currentAccount != null) {
+                        Dispatcher dispatcher = Dispatcher.getInstance();
+                        dispatcher.setCurrentInterceptor("Login", currentAccount);
+                        Interceptor interceptor = dispatcher.dispatch();
+                        interceptor.logger(currentAccount);
                         drawMainMenu();
                     }
                     else {
@@ -53,16 +61,35 @@ public class CommandLineInterface implements UI {
 
     @Override
     public void drawLogIn() {
-       System.out.println("WELCOME! 1)SIGN IN 2)REGISTER 3)QUIT");
+       System.out.println("WELCOME! 1)SIGN IN 2)REGISTER 3)MOD MENU 4)QUIT");
        int input = Integer.parseInt(in.nextLine());
        switch(input){
            case 1: drawSignIn(); break;
            case 2: drawRegister(); break;
-           case 3: System.out.println("GOODBYE"); break;
+           case 3: drawModMenu(); break;
+           case 4: System.out.println("GOODBYE"); System.exit(0); break;
            }
-      
-       
     }
+       
+    public void drawModMenu(){
+    System.out.println("PLEASE ENTER INTERCEPTOR. 1)LOGIN 2)LOGOUT 3) BACK");
+    int input = Integer.parseInt(in.nextLine());
+    if(input == 1){
+        LoginInterceptor interceptor =  new LoginInterceptor(currentAccount);
+        Dispatcher.getInstance().register(interceptor);
+        drawModMenu();
+    }
+    else if (input == 2){
+        LogoutInterceptor interceptor = new LogoutInterceptor(currentAccount);
+        Dispatcher.getInstance().register(interceptor);
+        drawModMenu();
+    }
+    else
+        drawLogIn();
+
+ }
+       
+    
 
     @Override
     public void drawMainMenu() {
@@ -72,7 +99,13 @@ public class CommandLineInterface implements UI {
            case 1: drawMakeReservations(); break;
            case 2: drawViewReservations(); break;
            case 3: drawLogIn(); break;
-           case 4: System.out.println("GOODBYE"); System.exit(0); break;
+           case 4: System.out.println("GOODBYE");
+                   System.exit(0); 
+                   Dispatcher dispatcher = Dispatcher.getInstance();
+                   dispatcher.setCurrentInterceptor("Logout", currentAccount);
+                   Interceptor interceptor = dispatcher.dispatch();
+                   interceptor.logger(currentAccount);
+                   break;
            }
     }
 

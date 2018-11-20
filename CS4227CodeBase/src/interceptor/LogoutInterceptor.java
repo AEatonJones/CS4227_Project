@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public class LogoutInterceptor implements Interceptor{
     Account account;
     
-    LogoutInterceptor(Account account) {
+    public LogoutInterceptor(Account account) {
         this.account = account;
 
     }
