@@ -25,7 +25,7 @@ public class LogoutInterceptor implements Interceptor{
         log = account.getEmail() + "," + (sdf.format(ts)) ;
         
         try(FileWriter filewriter = new FileWriter("src/resources/log.txt",true)){
-            filewriter.write("\n User logged in:" + log);
+            filewriter.write("User logged out:" + log + "\n");
             
         
         }   catch (IOException ex) {

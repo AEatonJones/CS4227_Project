@@ -93,18 +93,23 @@ public class CommandLineInterface implements UI {
 
     @Override
     public void drawMainMenu() {
+        Dispatcher dispatcher = Dispatcher.getInstance();
+        Interceptor interceptor;
        System.out.println("1)MAKE RESERVATION 2)VIEW RESERVATION 3)SIGN OUT 4)QUIT");
        int input = Integer.parseInt(in.nextLine());
        switch(input){
            case 1: drawMakeReservations(); break;
            case 2: drawViewReservations(); break;
-           case 3: drawLogIn(); break;
-           case 4: System.out.println("GOODBYE");
-                   System.exit(0); 
-                   Dispatcher dispatcher = Dispatcher.getInstance();
-                   dispatcher.setCurrentInterceptor("Logout", currentAccount);
-                   Interceptor interceptor = dispatcher.dispatch();
+           case 3: dispatcher.setCurrentInterceptor("Logout", currentAccount);
+                   interceptor = dispatcher.dispatch();
                    interceptor.logger(currentAccount);
+                   drawLogIn();
+                   break;
+           case 4: System.out.println("GOODBYE");
+                   dispatcher.setCurrentInterceptor("Logout", currentAccount);
+                   interceptor = dispatcher.dispatch();
+                   interceptor.logger(currentAccount);
+                   System.exit(0); 
                    break;
            }
     }
