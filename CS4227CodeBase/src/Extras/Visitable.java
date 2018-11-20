@@ -1,6 +1,6 @@
 package Extras;
 
 public interface Visitable {
-    public void accept(Visitor visitor);
+    public double accept(Visitor visitor);
     
 }

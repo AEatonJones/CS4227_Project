@@ -3,14 +3,16 @@ package Extras;
 public class Gym implements Visitable{
 
     private int time;
+    private double price;
     
     public Gym(int hours){
         time = hours;
     }
     
     @Override
-    public void accept(Visitor visitor) {
+    public double accept(Visitor visitor) {
         visitor.visit(this);
+        return price;
     }
 
     public int getHours()

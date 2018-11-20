@@ -9,6 +9,12 @@ import hotel.room.RoomControl;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -481,7 +487,7 @@ public class CustomerUI   {
             
             addExtras = new JButton("Add Extras");
             addExtras.addActionListener(listener);
-            addExtras.setActionCommand("Cancel");
+            addExtras.setActionCommand("extras");
             buttons.add(addExtras);
 
             goBack = new JButton("Go Back");
@@ -536,8 +542,78 @@ public class CustomerUI   {
                 new AccountMenuUI(account);
                 this.window.dispose();
                 }
+        
+        if(pressed.equals(addExtras)) {
+            System.out.println("hi");
+            JPanel panel = new JPanel();
+            window.add(panel);
+            
+            JLabel title = new JLabel("Facility: \t\tHours spent:");
+            JLabel spa = new JLabel("Spa\t\t");
+            JLabel gym = new JLabel("Gym\t\t");
+            JLabel poolRoom = new JLabel("Pool Room\t\t");
+            JLabel swim = new JLabel("Swimming Pool\t\t");
+            JLabel conf = new JLabel("Conference Room\t\t");
+            JLabel func = new JLabel("Function Room\t\t");
+            
+            int [] hours = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+            
+            JButton addButton = new JButton("Add");
+            addButton.addActionListener(listener);
+            addButton.setActionCommand("addExtra");
+   
+            panel.setLayout(new GridLayout(1,8));
+            panel.add(title);
+            panel.add(spa, hours);
+            panel.add(gym, hours);
+            panel.add(poolRoom, hours);
+            panel.add(swim, hours);
+            panel.add(conf, hours);
+            panel.add(func, hours);
+            panel.add(addButton);
+            
+            
+            
+            File writeFile = new File("src/resources/reservations.txt");
+            File tempFile = new File("src/resources/TempReservations.txt");
+        
+            String change = listOfReservations.getSelectedValue().toString().trim();
+            
+            BufferedReader reader;
+            try {
+                    reader = new BufferedReader(new FileReader(writeFile));
+                
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+     
+            String[] resDetails = change.split(",");
+            double originalPrice = Double.parseDouble(resDetails[5]);
+            double newPrice = 0;
+            
+            String currentLine;
+            while((currentLine = reader.readLine()) != null){
+                String trimmedLine = currentLine.trim();
+                if(!trimmedLine.equals(change))
+                    try {
+                        writer.write(currentLine + "\n");
+                } catch (IOException ex) {
+                    Logger.getLogger(CustomerUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                else
+                    writer.write(resDetails[0] + "," + resDetails[1] + resDetails[2] + resDetails[3] + resDetails[4] + newPrice + "\n");
+            }
+            writeFile.delete();
+            tempFile.renameTo(writeFile);
+            } catch (FileNotFoundException ex) {
+                    Logger.getLogger(CustomerUI.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(CustomerUI.class.getName()).log(Level.SEVERE, null, ex);
+                }  
+        }
+    
         }
     }
+        
+        
 
 
     class MakeReservation   implements ActionListener {
