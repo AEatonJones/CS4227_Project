@@ -415,7 +415,7 @@ public class CustomerUI   {
             JList listOfReservations;
             JScrollPane scrollPane;
             DefaultListModel orderListModel;
-            JButton cancelReservation, goBack;
+            JButton cancelReservation, goBack, addExtras;
             Account account = null;
             ArrayList<String> reservations;
             private ActionListener listener;
@@ -478,6 +478,11 @@ public class CustomerUI   {
             cancelReservation.addActionListener(listener);
             cancelReservation.setActionCommand("Cancel");
             buttons.add(cancelReservation);
+            
+            addExtras = new JButton("Add Extras");
+            addExtras.addActionListener(listener);
+            addExtras.setActionCommand("Cancel");
+            buttons.add(addExtras);
 
             goBack = new JButton("Go Back");
             goBack.addActionListener(listener);
