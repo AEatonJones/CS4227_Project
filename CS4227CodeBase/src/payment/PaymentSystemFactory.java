@@ -1,12 +1,16 @@
 package payment;
 
-import Account.Account;
+import account.Account;
 
 public class PaymentSystemFactory 
 {
+    private PaymentSystemFactory() {
+        //made to stop object creation
+    }
+        
     public static PaymentSystem getPaymentSystem(PaymentController controller, Account account)
     {
-        PaymentSystem system = null;
+        PaymentSystem system;
         String accountEmail = account.getEmail();
         
         //Determine account type from email

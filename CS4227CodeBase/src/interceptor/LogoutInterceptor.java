@@ -1,9 +1,7 @@
 package interceptor;
 
-
-import Account.Account;
-import Command.MakeReservationCommand;
-import interceptor.Interceptor;
+import account.Account;
+import command.MakeReservationCommand;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -11,16 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author hmaug
- */
 public class LogoutInterceptor implements Interceptor{
     Account account;
     
@@ -38,7 +26,6 @@ public class LogoutInterceptor implements Interceptor{
         
         try(FileWriter filewriter = new FileWriter("src/resources/log.txt",true)){
             filewriter.write("\n User logged in:" + log);
-            filewriter.close();
             
         
         }   catch (IOException ex) {

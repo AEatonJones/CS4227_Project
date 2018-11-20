@@ -1,6 +1,6 @@
 package payment;
 
-import Reservation.Reservation;
+import reservation.Reservation;
 
 public class NonMemberPaymentSystem extends PaymentSystem
 {

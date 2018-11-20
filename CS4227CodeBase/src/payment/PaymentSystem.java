@@ -1,6 +1,6 @@
 package payment;
 
-import Reservation.Reservation;
+import reservation.Reservation;
 import hotel.room.RoomControl;
 import java.io.IOException;
 import java.util.logging.Level;
