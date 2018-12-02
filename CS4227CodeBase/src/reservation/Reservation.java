@@ -1,6 +1,6 @@
 package reservation;
 
-public class Reservation implements Visitable
+public class Reservation
 {
     private String accountEmail;
     private String startDate;
@@ -76,11 +76,5 @@ public class Reservation implements Visitable
     public String toString()
     {
         return (accountEmail + "," + startDate + "," + noNights + "," + roomID + "," + location + "," + String.format("%.2f", cost));
-    }
-
-    @Override
-    public void acceptRoomVisitor(Visitor visitor)
-    {
-        visitor.visit(this);
     }
 }

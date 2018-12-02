@@ -35,13 +35,6 @@ public class Dispatcher {
     }
     
     public void setCurrentInterceptor(String action, Account account){
-        Interceptor target;
-        
-        switch(action){
-                case "Login":   target = new LoginInterceptor(account); break;
-                case "Logout":  target = new LogoutInterceptor(account); break;
-                default:        target = null;
-        }
         for(Interceptor i: iterateList) {
            if(i.getAction().equals(action)) {
                currentInterceptor = i;

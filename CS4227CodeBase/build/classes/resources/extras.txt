@@ -1,0 +1,35 @@
+Gym,1
+Gym,1
+Gym,2
+Gym,1
+Gym,2
+Gym,2
+Gym,3
+Gym,3
+Gym,2
+Gym,2
+Gym,1
+Gym,2
+Gym,1
+Swimming Pool,2
+Swimming Pool,5
+Swimming Pool,5
+Swimming Pool,5
+Function,5
+Function,5
+Conference,2
+Conference,2
+Conference,2
+Conference,2
+Conference,2
+Conference,2
+Conference,2
+Conference,2
+Pool,1
+Pool,2
+Pool,2
+Pool,4
+Pool,1
+Spa,3
+Spa,3
+Spa,3

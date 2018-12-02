@@ -10,6 +10,7 @@ import account.AccountControl;
 import command.CancelReservationCommand;
 import command.Command;
 import command.MakeReservationCommand;
+import extras.ExtraVisitor;
 import interceptor.Dispatcher;
 import interceptor.Interceptor;
 import interceptor.LoginInterceptor;
@@ -19,7 +20,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import reservation.Reservation;
 import reservation.ReservationMemento;
-import reservation.ReservationVisitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import ui.CustomerUI.*;
@@ -117,6 +117,10 @@ public class CustomerUIAdapter implements UI , ActionListener{
 
     @Override
     public void drawMainMenu() {
+        if(account.getEmail().equals("admin"))
+        {
+            drawExtras();
+        }
         menu = ui.new AccountMenuUI(account, this);
         menu.draw();
     }
@@ -142,7 +146,6 @@ public class CustomerUIAdapter implements UI , ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
-        System.out.println("Entered Action Preformed");
         
         switch(actionCommand){
             //ModMenuUI
@@ -397,7 +400,6 @@ public class CustomerUIAdapter implements UI , ActionListener{
                 int option = JOptionPane.showConfirmDialog(null, "You have just reservered your booking\nHit Cancel if you wish to undo otherwise hit Ok.", "Confirmation", JOptionPane.OK_CANCEL_OPTION);
                 if(option == JOptionPane.OK_OPTION) {
                     bookedConfirm = true;
-                    reservation.acceptRoomVisitor(ReservationVisitor.getInstance());
                 }
                 else if(option == JOptionPane.CANCEL_OPTION) {
                     cmd.undo();
@@ -421,5 +423,12 @@ public class CustomerUIAdapter implements UI , ActionListener{
             Logger.getLogger(ViewReservation.class.getName()).log(Level.SEVERE, null, ex);
         }
         rooms.window.dispose();
+    }
+
+    @Override
+    public void drawExtras()
+    {
+        JFrame extrasFrame = new JFrame();
+        JOptionPane.showMessageDialog(extrasFrame, new ExtraVisitor().getStats(), "ADMIN ONLY: Expected Income Report", JOptionPane.INFORMATION_MESSAGE);
     }
 }

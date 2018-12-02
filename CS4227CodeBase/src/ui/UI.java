@@ -14,6 +14,7 @@ public interface UI {
     public abstract void drawLogIn();
     public abstract void drawModMenu();
     public abstract void drawMainMenu();
+    public abstract void drawExtras();
     public abstract void drawViewReservations();
     public abstract void drawMakeReservations();
     public abstract void drawAvailableRooms();

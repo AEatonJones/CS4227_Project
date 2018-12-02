@@ -1,2 +1,3 @@
 User logged in: henry@ul.ie,2018.12.02-12:01
-User logged out:henry@ul.ie,2018.12.02-12:01
+User logged out:henry@ul.ie,2018.12.02-12:01User logged in: admin,2018.12.02-17:04
+User logged out:admin,2018.12.02-17:04

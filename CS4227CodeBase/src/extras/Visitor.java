@@ -1,10 +1,11 @@
 package extras;
 
 public interface Visitor {
-    public void visit(Spa spa);
-    public void visit(PoolRoom poolRoom);
-    public void visit(SwimmingPool swimmingPool);
-    public void visit(Gym gym);
-    public void visit(FunctionRoom functionRoom);
-    public void visit(ConferenceRoom conferenceRoom);
+    public String getStats();
+    public double visit(Spa spa);
+    public double visit(PoolRoom poolRoom);
+    public double visit(SwimmingPool swimmingPool);
+    public double visit(Gym gym);
+    public double visit(FunctionRoom functionRoom);
+    public double visit(ConferenceRoom conferenceRoom);
 }

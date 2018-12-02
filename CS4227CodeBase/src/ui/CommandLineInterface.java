@@ -4,6 +4,7 @@ import command.CancelReservationCommand;
 import command.MakeReservationCommand;
 import account.Account;
 import account.AccountControl;
+import extras.ExtraVisitor;
 import reservation.Reservation;
 import interceptor.Dispatcher;
 import interceptor.Interceptor;
@@ -15,16 +16,17 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-public class CommandLineInterface implements UI {
-    
-    public CommandLineInterface(){
-        drawLogIn();
-    }
-
+public class CommandLineInterface implements UI 
+{
     String email;
     Reservation reservation = null;
     Account currentAccount = null;
     Scanner in = new Scanner(System.in);
+        
+    public CommandLineInterface(){
+        drawLogIn();
+    }
+
     @Override
     public void drawSignIn() {
         
@@ -45,7 +47,10 @@ public class CommandLineInterface implements UI {
                         Dispatcher dispatcher = Dispatcher.getInstance();
                         dispatcher.setCurrentInterceptor("Login", currentAccount);
                         Interceptor interceptor = dispatcher.dispatch();
-                        interceptor.logger(currentAccount);
+                        if(interceptor != null)
+                        {
+                            interceptor.logger(currentAccount);
+                        }
                         drawMainMenu();
                     }
                     else {
@@ -95,23 +100,46 @@ public class CommandLineInterface implements UI {
     public void drawMainMenu() {
         Dispatcher dispatcher = Dispatcher.getInstance();
         Interceptor interceptor;
-       System.out.println("1)MAKE RESERVATION 2)VIEW RESERVATION 3)SIGN OUT 4)QUIT");
-       int input = Integer.parseInt(in.nextLine());
-       switch(input){
-           case 1: drawMakeReservations(); break;
-           case 2: drawViewReservations(); break;
-           case 3: dispatcher.setCurrentInterceptor("Logout", currentAccount);
-                   interceptor = dispatcher.dispatch();
-                   interceptor.logger(currentAccount);
-                   drawLogIn();
-                   break;
-           case 4: System.out.println("GOODBYE");
-                   dispatcher.setCurrentInterceptor("Logout", currentAccount);
-                   interceptor = dispatcher.dispatch();
-                   interceptor.logger(currentAccount);
-                   System.exit(0); 
-                   break;
-           }
+        
+        String menuOptions = "1)MAKE RESERVATION 2)VIEW RESERVATION 3)SIGN OUT 4)QUIT";
+        if(currentAccount.getEmail().equals("admin"))
+        {
+            menuOptions += " 5)EXTRAS STATS";
+        }
+        
+        System.out.println(menuOptions);
+        int input = Integer.parseInt(in.nextLine());
+        
+        switch(input){
+            case 1: drawMakeReservations(); break;
+            case 2: drawViewReservations(); break;
+            case 3: dispatcher.setCurrentInterceptor("Logout", currentAccount);
+                    interceptor = dispatcher.dispatch();
+                    if(interceptor != null)
+                    {
+                        interceptor.logger(currentAccount);
+                    }
+                    drawLogIn();
+                    break;
+            case 4: System.out.println("GOODBYE");
+                    dispatcher.setCurrentInterceptor("Logout", currentAccount);
+                    interceptor = dispatcher.dispatch();
+                    if(interceptor != null)
+                    {
+                        interceptor.logger(currentAccount);
+                    }
+                    System.exit(0); 
+                    break;
+            case 5: if(currentAccount.getEmail().equals("admin"))
+                    {
+                        drawExtras();
+                    }
+                    else
+                    {
+                        System.out.println("Invalid Option\n");
+                        drawMainMenu();
+                    }
+        }
     }
 
     @Override
@@ -198,6 +226,13 @@ public class CommandLineInterface implements UI {
             }
             } 
     }
-      
 
+    @Override
+    public void drawExtras()
+    {
+        ExtraVisitor visitor = new ExtraVisitor();
+        System.out.println(visitor.getStats());
+        
+        drawMainMenu();
+    }
 }
