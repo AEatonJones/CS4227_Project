@@ -84,11 +84,6 @@ public class CustomerUI   {
             register.setActionCommand("Register");
             buttons.add(register, constraints);
 
-            quit = new JButton("QUIT");
-            quit.addActionListener(listener);
-            quit.setActionCommand("Quit");
-            buttons.add(quit, constraints);
-
             frame.add(buttons);
 
             frame.setVisible(true);
@@ -107,8 +102,6 @@ public class CustomerUI   {
                 this.frame.dispose();
                 new CustomerRegister().draw();
             }
-            else
-                System.exit(0);
         }
     }
 
@@ -370,7 +363,7 @@ public class CustomerUI   {
 
             quit = new JButton("QUIT");
             quit.addActionListener(listener);
-            quit.setActionCommand("quit");
+            quit.setActionCommand("Main Menu Quit");
             buttons.add(quit, bag);
 
             frame.add(buttons);

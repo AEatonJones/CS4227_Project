@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 public class LogoutInterceptor implements Interceptor{
     Account account;
+    private static final String ACTION = "Logout";
     
     public LogoutInterceptor(Account account) {
         this.account = account;
@@ -31,5 +32,10 @@ public class LogoutInterceptor implements Interceptor{
         }   catch (IOException ex) {
             Logger.getLogger(MakeReservationCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    @Override
+    public String getAction() {  
+        return ACTION;
     }
 }

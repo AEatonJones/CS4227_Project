@@ -10,6 +10,13 @@ import account.AccountControl;
 import command.CancelReservationCommand;
 import command.Command;
 import command.MakeReservationCommand;
+import interceptor.Dispatcher;
+import interceptor.Interceptor;
+import interceptor.LoginInterceptor;
+import interceptor.LogoutInterceptor;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import reservation.Reservation;
 import reservation.ReservationMemento;
 import reservation.ReservationVisitor;
@@ -19,7 +26,13 @@ import ui.CustomerUI.*;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JWindow;
 
 /**
  *
@@ -35,19 +48,59 @@ public class CustomerUIAdapter implements UI , ActionListener{
     private AccountMenuUI menu;
     private ViewPossibleRooms rooms;
     
+    private JFrame modMenu;
+    private JComboBox mods;
+    private JButton goBack;
+    private JButton addMod;
+    
     private Account account = null;
     private Reservation reservation = null;
     private ReservationMemento memento = null;
     
     public CustomerUIAdapter()
     {
-        drawLogIn();
+        drawModMenu();
     }
     
     @Override
     public void drawSignIn() {
         signIn = ui.new CustomerSignIn(this);
         signIn.draw();
+    }
+    
+    @Override
+    public void drawModMenu() {
+        modMenu = new JFrame("Add Inteceptors");
+        modMenu.setSize(325, 140);
+        modMenu.setResizable(false);
+        modMenu.setLocationRelativeTo(null);
+        modMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        modMenu.setLayout(new BorderLayout());
+
+        JPanel input = new JPanel();
+        input.setLayout(new GridLayout(1, 1));
+
+        mods = new JComboBox<>();
+        mods.setModel(new DefaultComboBoxModel<>(new String[] { "LogIn", "LogOut" }));     
+        input.add(mods);   
+        
+        modMenu.add("Center", input);
+        
+        JPanel buttons = new JPanel();
+        buttons.setLayout(new FlowLayout());
+        
+        addMod = new JButton("Add");
+        addMod.addActionListener(this);
+        addMod.setActionCommand("Add Mod");
+        buttons.add(addMod);
+        
+        goBack = new JButton("Main Menu");
+        goBack.addActionListener(this);
+        goBack.setActionCommand("Mod Go Back");
+        buttons.add(goBack);
+
+        modMenu.add("South", buttons);
+        modMenu.setVisible(true);
     }
 
     @Override
@@ -89,12 +142,17 @@ public class CustomerUIAdapter implements UI , ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
+        System.out.println("Entered Action Preformed");
         
         switch(actionCommand){
+            //ModMenuUI
+            case "Add Mod":                     addMod();           break;
+            case "Mod Go Back":                 goBack("Mod");      break;
+            
             //CustomerLogInUI
             case "Log In":                      logIn();            break;
             case "Log in Register":             logInReg();         break;
-            case "Quit":                        quit();             break;
+            case "Quit":                        quit("LogInUI");    break;
             
             //CustomerSignIn
             case "Sign In":                     signIn();           break;
@@ -108,6 +166,7 @@ public class CustomerUIAdapter implements UI , ActionListener{
             case "Menu Make":                   menuMakeRes();      break;
             case "Menu View":                   menuViewRes();      break;
             case "Sign Out":                    signOut();          break;
+            case "Main Menu Quit":              quit("MainMenuUI");    break;
             
             //ViewReservation
             case "Cancel Reservation":          cancel();           break;
@@ -123,6 +182,26 @@ public class CustomerUIAdapter implements UI , ActionListener{
         }
     }
     
+    private void addMod()
+    {
+        String modName = mods.getSelectedItem().toString();
+        System.out.println(modName);
+        
+        if(modName.equals("LogIn"))
+        {
+            LoginInterceptor interceptor =  new LoginInterceptor(account);
+            Dispatcher.getInstance().register(interceptor);
+            JOptionPane.showMessageDialog(modMenu, "You have added a LogIn Logger Mod");
+        }
+        
+        else if(modName.equals("LogOut"))
+        {
+            LogoutInterceptor interceptor =  new LogoutInterceptor(account);
+            Dispatcher.getInstance().register(interceptor);
+            JOptionPane.showMessageDialog(modMenu, "You have added a LogOut Logger Mod");
+        }
+    }
+    
     private void logIn()
     {
         login.frame.dispose();
@@ -135,9 +214,20 @@ public class CustomerUIAdapter implements UI , ActionListener{
         drawRegister();
     }
     
-    private void quit()
+    private void quit(String uiName)
     {
-        System.exit(0);
+        Dispatcher dispatcher = Dispatcher.getInstance();
+        dispatcher.setCurrentInterceptor("Logout", account);
+        Interceptor interceptor = dispatcher.dispatch();
+        if(interceptor != null && account != null) {
+            interceptor.logger(account);
+        }
+        
+        switch(uiName) {
+            case "LoginUI":             login.frame.dispose();  break;
+            case "MainMenuUI":           menu.frame.dispose();   break;
+        }
+        
     }
     
     private void signIn()
@@ -154,6 +244,13 @@ public class CustomerUIAdapter implements UI , ActionListener{
         
         if(account != null) 
         {
+            Dispatcher dispatcher = Dispatcher.getInstance();
+            dispatcher.setCurrentInterceptor("Login", account);
+            Interceptor interceptor = dispatcher.dispatch();
+            if(interceptor != null) {
+                interceptor.logger(account);
+            }
+            
             drawMainMenu();
             signIn.window.dispose();
         }
@@ -167,6 +264,8 @@ public class CustomerUIAdapter implements UI , ActionListener{
     {
         switch(uiName)
         {
+            case "Mod":         modMenu.dispose();          drawLogIn();            break;
+            
             case "Sign In":     signIn.window.dispose();    drawLogIn();            break;
             
             case "Register":    register.window.dispose();  drawLogIn();            break;
@@ -215,6 +314,13 @@ public class CustomerUIAdapter implements UI , ActionListener{
     
     private void signOut()
     {
+        Dispatcher dispatcher = Dispatcher.getInstance();
+        dispatcher.setCurrentInterceptor("Logout", account);
+        Interceptor interceptor = dispatcher.dispatch();
+        if(interceptor != null) {
+            interceptor.logger(account);
+        }
+        
         menu.frame.dispose();
         drawSignIn();
     }

@@ -11,11 +11,10 @@ import java.sql.Timestamp;
 
 public class LoginInterceptor implements Interceptor{
     Account account;
-
+    private static final String ACTION = "Login";
 
     public LoginInterceptor(Account account) {
         this.account = account;
-
     }
 
     @Override
@@ -32,6 +31,11 @@ public class LoginInterceptor implements Interceptor{
         }   catch (IOException ex) {
             Logger.getLogger(MakeReservationCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    @Override
+    public String getAction() {  
+        return ACTION;
     }
  
 }
